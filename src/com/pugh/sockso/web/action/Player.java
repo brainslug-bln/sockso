@@ -1,19 +1,12 @@
-/*
- * Player.java
- * 
- * Created on Aug 8, 2007, 9:11:55 PM
- * 
- * Shows an embedded play with some music.
- * 
- */
 
 package com.pugh.sockso.web.action;
 
+import com.pugh.sockso.Utils;
 import com.pugh.sockso.music.Track;
 import com.pugh.sockso.web.BadRequestException;
 import com.pugh.sockso.web.Request;
 import com.pugh.sockso.web.action.playlist.XspfPlayer;
-import com.pugh.sockso.templates.web.TJsPlayer;
+import com.pugh.sockso.templates.web.THtml5Player;
 import com.pugh.sockso.templates.web.TXspfPlayer;
 import com.pugh.sockso.templates.web.TFlexPlayer;
 
@@ -41,12 +34,12 @@ public class Player extends WebAction {
         final String[] playArgs = req.getPlayParams( true );
         final String type = req.getUrlParam( 1 );
 
-        // use the JS player
-        if ( type.equals("js") ) {
-            showJsPlayer(
+        if ( type.equals( "html5" )) {
+            showHtml5Player(
                 req.getUrlParam( 2 ).equals( "random" )
                     ? getRandomTracks()
-                    : Track.getTracksFromPlayArgs( getDatabase(), playArgs )
+                    : getRequestedTracks( playArgs ),
+                req.getUrlParam( 2 ).equals( "random" )
             );
         }
         
@@ -55,8 +48,13 @@ public class Player extends WebAction {
         
             String extraArgs = "";
 
-            if ( req.hasArgument("orderBy") )
+            if ( req.hasArgument("orderBy") ) {
                 extraArgs += "&orderBy=" +req.getArgument("orderBy");
+            }
+            
+            if ( req.hasArgument("path") ) {
+                extraArgs += "&path=" + Utils.URLEncode(req.getArgument("path") );
+            }
 
             showXspfPlayer( getXspfPlayer(), extraArgs, playArgs );
 
@@ -65,22 +63,22 @@ public class Player extends WebAction {
     }
 
     /**
-     *  shows the jsplayer
+     *  shows the HTML 5 player
      * 
-     *  @param playArgs
+     *  @param tracks
+     *  @param random
      * 
      *  @throws IOException
-     *  @throws SQLException
-     *  @throws BadRequestException
      * 
      */
     
-    protected void showJsPlayer( final Vector<Track> tracks ) throws IOException, SQLException, BadRequestException {
+    protected void showHtml5Player( final Vector<Track> tracks, boolean random ) throws IOException {
 
-        final TJsPlayer tpl = new TJsPlayer();
+        final THtml5Player tpl = new THtml5Player();
         
         tpl.setTracks( tracks );
         tpl.setProperties( getProperties() );
+        tpl.setRandom( random );
         
         getResponse().showHtml( tpl.makeRenderer() );
 

@@ -1,48 +1,38 @@
-/*
- * FileServer.java
- * 
- * Created on May 27, 2007, 12:52:14 AM
- * 
- * implements a basic file server for sending files via http
- * 
- */
 
 package com.pugh.sockso.web.action;
 
-import com.pugh.sockso.web.*;
-import com.pugh.sockso.resources.Resources;
-import com.pugh.sockso.resources.Locale;
-import com.pugh.sockso.Utils;
-import com.pugh.sockso.Constants;
-import com.pugh.sockso.Properties;
-import com.pugh.sockso.db.Database;
-
-import java.io.IOException;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import java.awt.Font;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.geom.AffineTransform;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
-import java.util.Date;
-import java.util.Vector;
-import java.util.HashSet;
-
-import java.text.SimpleDateFormat;
-
 import org.apache.log4j.Logger;
+
+import com.pugh.sockso.Constants;
+import com.pugh.sockso.Properties;
+import com.pugh.sockso.Utils;
+import com.pugh.sockso.db.Database;
+import com.pugh.sockso.resources.Locale;
+import com.pugh.sockso.resources.Resources;
+import com.pugh.sockso.web.BadRequestException;
+import com.pugh.sockso.web.Request;
+import com.pugh.sockso.web.Response;
 
 public class FileServer extends WebAction {
 
@@ -174,7 +164,7 @@ public class FileServer extends WebAction {
         final Properties p = getProperties();
         
         // only cache if not in dev mode
-        if ( !p.get(Constants.DEV_ENABLED).equals(p.YES) ) {
+        if ( !p.get(Constants.DEV_ENABLED).equals(Properties.YES) ) {
             res.addHeader( "Date", formatter.format(dateNow) );
             res.addHeader( "Last-Modified", formatter.format(dateModified) );
             res.addHeader( "Expires", formatter.format(dateExpires) );
@@ -207,7 +197,7 @@ public class FileServer extends WebAction {
         final String itemName = req.getUrlParam( 2 );
         
         // check feature isn't disabled
-        if ( p.get(Constants.COVERS_DISABLED).equals(p.YES) )
+        if ( p.get(Constants.COVERS_DISABLED).equals(Properties.YES) )
             throw new BadRequestException( locale.getString("www.error.coversDisabled"), 404 );
         
         // got a cache hit?
@@ -227,7 +217,7 @@ public class FileServer extends WebAction {
         // 2. try searching amazon for a cover image to use (but only if this
         //    feature has not been disabled)
         
-        if ( !p.get(Constants.COVERS_DISABLE_REMOTE_FETCHING).equals(p.YES) ) {
+        if ( !p.get(Constants.COVERS_DISABLE_REMOTE_FETCHING).equals(Properties.YES) ) {
         
             final Database db = getDatabase();
             final CoverSearch search = new AmazonCoverSearch( db );
@@ -357,7 +347,7 @@ public class FileServer extends WebAction {
         serveCover(
             resizedImage,
             itemName,
-            p.get(Constants.COVERS_CACHE_LOCAL).equals(p.YES)
+            p.get(Constants.COVERS_CACHE_LOCAL).equals(Properties.YES)
         );
 
     }
@@ -391,10 +381,21 @@ public class FileServer extends WebAction {
         );
     }
 
-    public BufferedImage scale( Image p_image, double p_dScaleFactor ) {
+    /**
+     *  Scale the image by the specified factor
+     * 
+     *  @param image
+     *  @param dScaleFactor
+     * 
+     *  @return 
+     * 
+     */
+    
+    public BufferedImage scale( Image image, double dScaleFactor ) {
+        
         // calculate new width and height
-        int iWidth = ( int ) ( p_image.getWidth(null)*p_dScaleFactor );
-        int iHeight = ( int ) ( p_image.getHeight(null)*p_dScaleFactor );
+        int iWidth = ( int ) ( image.getWidth(null)*dScaleFactor );
+        int iHeight = ( int ) ( image.getHeight(null)*dScaleFactor );
      
         // create a BufferedImage instance
         BufferedImage bufferedImage = new BufferedImage( iWidth, iHeight, BufferedImage.TYPE_INT_RGB );
@@ -408,20 +409,33 @@ public class FileServer extends WebAction {
         g.setRenderingHint( RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC );
      
         // Apply scalefactor
-        g.drawImage( p_image, 0, 0, iWidth, iHeight, null );
+        g.drawImage( image, 0, 0, iWidth, iHeight, null );
      
         return bufferedImage;
+        
     }
 
-    public double calcScalingFactor(
-        int srcWidth, int srcHeight,
-        int targetWidth, int targetHeight
-    ) {
-        boolean tall = (srcHeight > srcWidth);
-        double factor =
+    /**
+     *  Calculate the factor to scale the image by
+     * 
+     *  @param srcWidth
+     *  @param srcHeight
+     *  @param targetWidth
+     *  @param targetHeight
+     * 
+     *  @return 
+     * 
+     */
+    
+    public double calcScalingFactor( int srcWidth, int srcHeight, int targetWidth, int targetHeight ) {
+        
+        final boolean tall = (srcHeight > srcWidth);
+        final double factor =
            (double) (tall ? targetHeight : targetWidth)
 	   / (double) (tall ? srcHeight : srcWidth);
-        return factor; 
+        
+        return factor;
+        
     }
 
 
@@ -532,6 +546,7 @@ public class FileServer extends WebAction {
         
         final Vector<File> files = new Vector<File>();
         final String[] exts = { "jpg", "png", "gif" };
+        final Properties p = getProperties();
 
         for ( final File track : trackDirs ) {
 
@@ -550,11 +565,58 @@ public class FileServer extends WebAction {
                     files.add( new File(path) );
                 }
             }
+            
+            // Should we fallback and search for the first image
+            // file in the track folder, regardless of its name ?
+            if ( p.get(Constants.COVERS_FILE_FALLBACK).equals(Properties.YES) ) {
+                final File fallbackFile = checkForFallbackFile( exts, track );
+                if ( fallbackFile != null ) {
+                    files.add( fallbackFile );
+                }
+            }
 
+            
         }
 
-        return files.toArray( new File[] {} );
+        return files.toArray( new File[0] );
         
+    }
+    
+    /**
+     *  Checks for a file in the track directory to use as a fallback
+     * 
+     *  @param files
+     *  @param exts
+     *  @param track 
+     * 
+     */
+    protected File checkForFallbackFile( final String[] exts, final File track ) {
+        
+        final File[]fallbackFiles = track.getParentFile().listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                
+                if (f.isFile()) {
+                    for (final String ext : exts) {
+                        if (f.getName().endsWith(ext)) {
+                            return true;
+                        }
+                    }
+                }
+                
+                return false;
+                
+            }
+        });
+
+        if ( fallbackFiles != null && fallbackFiles.length > 0 ) {
+            log.debug("Found " + fallbackFiles.length + " fallback cover files."
+                            + " Picking first: " + fallbackFiles[0].getAbsolutePath());
+            return fallbackFiles[ 0 ];
+        }
+        
+        return null;
+
     }
     
     /**

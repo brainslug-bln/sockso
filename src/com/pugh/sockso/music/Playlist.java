@@ -9,15 +9,16 @@
 
 package com.pugh.sockso.music;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Vector;
-
 import com.pugh.sockso.Utils;
 import com.pugh.sockso.db.Database;
 import com.pugh.sockso.web.BadRequestException;
 import com.pugh.sockso.web.User;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import java.util.Vector;
 
 public class Playlist extends MusicItem {
     
@@ -141,4 +142,48 @@ public class Playlist extends MusicItem {
     public static Playlist createFromResultSet(final ResultSet rs) throws SQLException {
     	return new Playlist(rs.getInt( "playlistId" ), rs.getString( "playlistName" ), rs.getInt( "trackCount" ) );
     }
+
+    /**
+     *  Finds a playlist by id, or returns null if it doesn't exist
+     * 
+     *  @param db
+     *  @param id
+     * 
+     *  @return 
+     * 
+     */
+    
+    public static Playlist find( final Database db, final int id ) throws SQLException {
+        
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        
+        try {
+            
+            final String sql = " select id, name " +
+                               " from playlists " +
+                               " where id = ? ";
+            
+            st = db.prepare( sql );
+            st.setInt( 1, id );
+            rs = st.executeQuery();
+            
+            if ( rs.next() ) {
+                return new Playlist(
+                    rs.getInt( "id" ),
+                    rs.getString( "name" )
+                );
+            }
+            
+        }
+        
+        finally {
+            Utils.close( st );
+            Utils.close( rs );
+        }
+        
+        return null;
+        
+    }
+    
 }

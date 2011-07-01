@@ -26,7 +26,7 @@ sockso.Player = function( options ) {
     this.PLAY_M3U = 'm3u';
     this.PLAY_XSPF = 'xspf';
     this.PLAY_PLS = 'pls';
-    this.PLAY_JSPLAYER = 'jsplayer';
+    this.PLAY_HTML5PLAYER = 'html5';
 
     /**
      *  creates a play option element
@@ -101,22 +101,24 @@ sockso.Player = function( options ) {
     };
 
     /**
-     *  Plays using the JS Player
+     *  Plays using the HTML 5 Player
      *
      *  @param playUrl
      *
      */
-    this.playJsPlayer = function( playUrl ) {
+    this.playHtml5Player = function( playUrl ) {
 
-        var w = window.open( '', 'PlayerWin', 'width=590,height=270,toolbars=no' );
+        var w = window.open( '', 'PlayerWin', 'width=590,height=310,toolbars=no' );
+        
         // load window first time
         if ( !options.jspAllowReload || w.location.href == 'about:blank' ) {
-            w.location.href = Properties.getUrl('/player/js/' +playUrl);
+            w.location.href = Properties.getUrl('/player/html5/' +playUrl);
         }
         // reload contents dynamically
         else {
-            w.jsp_reload( playUrl );
+            w.html5player_reload( playUrl );
         }
+        
         w.focus();
 
     };
@@ -170,10 +172,10 @@ sockso.Player = function( options ) {
             case self.PLAY_FLASH_EMBED:
                 this.playFlashEmbed( playUrl, trackFilter );
                 break;
-
-            case self.PLAY_JSPLAYER:
-                this.playJsPlayer( playUrl );
-                break;
+                
+            case self.PLAY_HTML5PLAYER:
+            	this.playHtml5Player( playUrl );
+            	break;
 
             case self.PLAY_FLEX:
             case self.PLAY_FLASH_POPUP:
@@ -200,7 +202,7 @@ sockso.Player = function( options ) {
                         .append( createPlayOption(self.PLAY_M3U,'M3U (iTunes,WMP,etc...)') )
                         .append( createPlayOption(self.PLAY_PLS,'Pls (Winamp,Shoutcast,etc...)') )
                         .append( createPlayOption(self.PLAY_XSPF,'XSPF') )
-                        .append( createPlayOption(self.PLAY_JSPLAYER,'JS Player') );
+                        .append( createPlayOption(self.PLAY_HTML5PLAYER,'HTML 5 Player') );
 
         $( parentId ).append(
             $( '<div></div>' )
