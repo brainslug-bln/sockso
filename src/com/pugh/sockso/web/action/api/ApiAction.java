@@ -1,33 +1,26 @@
 
 package com.pugh.sockso.web.action.api;
 
-import com.pugh.sockso.web.BadRequestException;
+import com.pugh.sockso.web.Request;
 import com.pugh.sockso.web.action.WebAction;
-
-import java.io.IOException;
-
-import java.sql.SQLException;
 
 abstract public class ApiAction extends WebAction {
 
+    public static final int DEFAULT_OFFSET = 0;
+    
+    public static final int DEFAULT_LIMIT = 100;
+    
     /**
-     *  Returns the name of the api command to handle.
-     *
-     *  @return
-     *
+     *  Indicates if the action can handle the specified request
+     * 
+     *  @param req
+     * 
+     *  @return 
+     * 
      */
-
-    public abstract String getCommandName();
-
-    /**
-     *  Returns true if the action handled the API request, false otherwise
-     *
-     *  @return
-     *
-     */
-
-    public abstract boolean handleApiRequest() throws BadRequestException, IOException, SQLException;
-
+    
+    public abstract boolean canHandle( final Request req );
+    
     /**
      *  Return the number of results to limit by
      *
@@ -37,16 +30,7 @@ abstract public class ApiAction extends WebAction {
 
     public int getLimit() {
 
-        try {
-
-            if ( getRequest().hasArgument( "limit" ) ) {
-                int limit = Integer.parseInt( getRequest().getArgument( "limit" ) );
-                return limit;
-            }
-
-        } catch (NumberFormatException ignored) {}
-
-        return 100;
+        return getUrlArgument( "limit", DEFAULT_LIMIT );
 
     }
 
@@ -59,16 +43,36 @@ abstract public class ApiAction extends WebAction {
 
     public int getOffset() {
 
+        return getUrlArgument( "offset", DEFAULT_OFFSET );
+        
+    }
+    
+    /**
+     *  Returns the value of the named url argument as an integer if specified,
+     *  or returns the default if it's not or invalid
+     * 
+     *  @param name
+     *  @param defaultValue
+     * 
+     *  @return 
+     * 
+     */
+    
+    protected int getUrlArgument( final String name, final int defaultValue ) {
+        
         try {
 
-            if ( getRequest().hasArgument( "offset" ) ) {
-                int offset = Integer.parseInt( getRequest().getArgument( "offset" ) );
-                return offset;
+            if ( getRequest().hasArgument(name) ) {
+                return Integer.parseInt(
+                    getRequest().getArgument( name )
+                );
             }
 
-        } catch (NumberFormatException ignored) {}
+        }
+        
+        catch ( final NumberFormatException ignored ) {}
 
-        return 0;
+        return defaultValue;
 
     }
 

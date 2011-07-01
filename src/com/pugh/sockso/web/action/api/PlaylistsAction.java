@@ -12,19 +12,21 @@ import java.sql.SQLException;
 
 public class PlaylistsAction extends ApiAction {
 
-    public boolean handleApiRequest() throws SQLException, IOException, BadRequestException {
-
-        final Request req = getRequest();
-
-        if ( req.getParamCount() == 2 ) {
-            handleRequest();
-            return true;
-        }
-
+    public boolean canHandle( final Request req ) {
+        
         return false;
-
+        
     }
-
+    
+    /**
+     *  Shows a list of playlists
+     * 
+     *  @throws SQLException
+     *  @throws IOException
+     *  @throws BadRequestException 
+     * 
+     */
+    
     public void handleRequest() throws SQLException, IOException, BadRequestException {
         
         final TApiPlaylists tpl = new TApiPlaylists();
@@ -33,13 +35,5 @@ public class PlaylistsAction extends ApiAction {
         getResponse().showJson( tpl.makeRenderer() );
         
     }
-
-    @Override
-    public String getCommandName() {
-
-        return "playlists";
-
-    }
-
 
 }

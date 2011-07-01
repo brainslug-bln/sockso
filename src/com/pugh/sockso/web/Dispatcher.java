@@ -100,9 +100,14 @@ public class Dispatcher {
         else if ( command.equals("pls") )
             action = new Plser( protocol );
         
-        else if ( command.equals("stream") )
+        else if ( command.equals("stream") ) {
             action = new Streamer();
+        }
         
+        else if ( command.equals("api") ) {
+            action = new Api();
+        }
+
         else if ( command.equals("json") )
             action = new Jsoner( cm, cache );
         
@@ -131,11 +136,10 @@ public class Dispatcher {
             action = getAdminAction( req );
         }
         
-        else if ( command.equals("nat") )
+        else if ( command.equals("nat") ) {
             action = new Nater();
-        else if ( command.equals("api") )
-        	action = new Api(cm, cache);
-        
+        }
+                
         if ( action != null ) {
             action.setDatabase( db );
             action.setProperties( p );
