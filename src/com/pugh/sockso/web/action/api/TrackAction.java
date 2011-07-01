@@ -29,28 +29,6 @@ public class TrackAction extends ApiAction {
     }
    
     /**
-     *  Indicates if the given string is an integer
-     * 
-     *  @param integer
-     * 
-     *  @return 
-     * 
-     */
-   
-    protected boolean isInteger( final String integer ) {
-       
-        try {
-            Integer.parseInt( integer );
-            return true;
-        }
-       
-        catch ( final NumberFormatException e ) {}
-       
-        return false;
-       
-    }
-
-    /**
      *  Show the track info, or throw an exception if not found
      * 
      *  @throws SQLException

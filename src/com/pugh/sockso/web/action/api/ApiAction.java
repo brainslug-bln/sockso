@@ -76,4 +76,26 @@ abstract public class ApiAction extends WebAction {
 
     }
 
+    /**
+     *  Indicates if the given string is an integer
+     * 
+     *  @param integer
+     * 
+     *  @return 
+     * 
+     */
+   
+    protected boolean isInteger( final String integer ) {
+       
+        try {
+            Integer.parseInt( integer );
+            return true;
+        }
+       
+        catch ( final NumberFormatException e ) {}
+       
+        return false;
+       
+    }
+
 }
