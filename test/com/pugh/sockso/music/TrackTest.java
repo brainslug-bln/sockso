@@ -243,7 +243,7 @@ public class TrackTest extends SocksoTestCase {
         assertEquals( 2, tracks.size() );
     }
     
-    public void testFindingTrackWithNonExistantIdReturnsNull() {
+    public void testFindingTrackWithNonExistantIdReturnsNull() throws Exception {
         assertNull( Track.find(new TestDatabase(),1) );
     }
     

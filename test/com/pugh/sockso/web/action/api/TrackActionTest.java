@@ -5,6 +5,7 @@ import com.pugh.sockso.tests.SocksoTestCase;
 import com.pugh.sockso.tests.TestDatabase;
 import com.pugh.sockso.tests.TestResponse;
 import com.pugh.sockso.web.BadRequestException;
+import java.io.IOException;
 
 import java.sql.SQLException;
 
@@ -38,6 +39,7 @@ public class TrackActionTest extends SocksoTestCase {
             action.setRequest(getRequest( "/api/tracks/123" ));
             action.handleRequest();
         }
+        catch ( IOException e ) {}
         catch ( SQLException e ) {}
         catch ( BadRequestException e ) { gotException = true; }
         if ( !gotException ) {
