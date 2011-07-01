@@ -339,5 +339,46 @@ public class Track extends MusicItem {
         return string.replaceAll( "[^A-Za-z0-9]", "" );
         
     }
+    
+    /**
+     *  Finds a track by ID
+     * 
+     *  @param db
+     *  @param id
+     * 
+     *  @return
+     * 
+     *  @throws SQLException 
+     * 
+     */
+    
+    public static Track find( final Database db, final int id ) throws SQLException {
+        
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        
+        try {
+            
+            final String sql = getSelectFromSql() +
+                               " where t.id = ? ";
+            
+            st = db.prepare( sql );
+            st.setInt( 1, id );
+            rs = st.executeQuery();
+            
+            if ( rs.next() ) {
+                return Track.createFromResultSet( rs );
+            }
+            
+        }
+        
+        finally {
+            Utils.close( st );
+            Utils.close( rs );
+        }
+        
+        return null;
+        
+    }
 
 }

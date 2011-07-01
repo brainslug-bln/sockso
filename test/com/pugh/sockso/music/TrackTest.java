@@ -242,5 +242,30 @@ public class TrackTest extends SocksoTestCase {
         Vector<Track> tracks = Track.getTracksFromPath( db, "/music" );
         assertEquals( 2, tracks.size() );
     }
+    
+    public void testFindingTrackWithNonExistantIdReturnsNull() {
+        assertNull( Track.find(new TestDatabase(),1) );
+    }
+    
+    public void testFindingTrackReturnsIt() throws Exception {
+        TestDatabase db = new TestDatabase();
+        db.fixture( "singleTrack" );
+        Track track = Track.find( db, 1 );
+        assertEquals( "My Track", track.getName() );
+    }
+    
+    public void testFindingTrackReturnsArtistObjectWithTrack() throws Exception {
+        TestDatabase db = new TestDatabase();
+        db.fixture( "singleTrack" );
+        Track track = Track.find( db, 1 );
+        assertEquals( "My Album", track.getAlbum().getName() );
+    }
+
+    public void testFindingTrackReturnsAlbumObjectWithTrack() throws Exception {
+        TestDatabase db = new TestDatabase();
+        db.fixture( "singleTrack" );
+        Track track = Track.find( db, 1 );
+        assertEquals( "My Artist", track.getArtist().getName() );
+    }
 
 }
