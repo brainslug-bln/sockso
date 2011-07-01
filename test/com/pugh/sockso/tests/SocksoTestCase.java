@@ -268,5 +268,20 @@ public class SocksoTestCase extends TestCase {
         }
         
     }
+    
+    /**
+     *  Creates and returns a new request object to the specified url as a GET
+     * 
+     *  @param url
+     * 
+     *  @return
+     * 
+     */
+    
+    protected TestRequest getRequest( final String url ) {
+        
+        return new TestRequest( "GET " +url+ " HTTP/1.1" );
+
+    }
 
 }

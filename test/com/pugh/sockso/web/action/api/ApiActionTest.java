@@ -2,7 +2,6 @@
 package com.pugh.sockso.web.action.api;
 
 import com.pugh.sockso.tests.SocksoTestCase;
-import com.pugh.sockso.tests.TestRequest;
 import com.pugh.sockso.web.Request;
 
 public class ApiActionTest extends SocksoTestCase {
@@ -15,38 +14,32 @@ public class ApiActionTest extends SocksoTestCase {
     }
     
     public void testGetoffsetReturnsIntValueWhenSpecified() {
-        TestRequest req = new TestRequest( "GET /?offset=123 HTTP/1.1" );
-        action.setRequest( req );
+        action.setRequest(getRequest( "/?offset=123" ));
         assertEquals( 123, action.getOffset() );
     }
     
     public void testGetoffsetReturnsDefaultValueWhenNotSpecified() {
-        TestRequest req = new TestRequest( "GET / HTTP/1.1" );
-        action.setRequest( req );
+        action.setRequest(getRequest( "/" ));
         assertEquals( ApiAction.DEFAULT_OFFSET, action.getOffset() );
     }
     
     public void testGetoffsetReturnsDefaultValueWhenInvalidSpecified() {
-        TestRequest req = new TestRequest( "GET /?offset=foo HTTP/1.1" );
-        action.setRequest( req );
+        action.setRequest(getRequest( "/?offset=foo" ));
         assertEquals( ApiAction.DEFAULT_OFFSET, action.getOffset() );
     }
     
     public void testGetlimitReturnsIntValueWhenSpecified() {
-        TestRequest req = new TestRequest( "GET /?limit=123 HTTP/1.1" );
-        action.setRequest( req );
+        action.setRequest(getRequest( "/?limit=123" ));
         assertEquals( 123, action.getLimit() );
     }
     
     public void testGetlimitReturnsDefaultValueWhenNotSpecified() {
-        TestRequest req = new TestRequest( "GET / HTTP/1.1" );
-        action.setRequest( req );
+        action.setRequest(getRequest( "/" ));
         assertEquals( ApiAction.DEFAULT_LIMIT, action.getLimit() );
     }
     
     public void testGetlimitReturnsDefaultValueWhenInvalidSpecified() {
-        TestRequest req = new TestRequest( "GET /?limit=foo HTTP/1.1" );
-        action.setRequest( req );
+        action.setRequest(getRequest( "/?limit=foo" ));
         assertEquals( ApiAction.DEFAULT_LIMIT, action.getLimit() );
     }
     
