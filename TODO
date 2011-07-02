@@ -55,8 +55,8 @@ be adjusted using "limit" and "offset" parameters.  Requests should be GET.
 
 /api - (server info, same as /json/serverinfo) [DONE]
 /api/artists - array of all artists ordered a-z (paged)
-/api/artists/123 - artist info (with albums)
-/api/artists/123/tracks - array of tracks for artist
+/api/artists/123 - artist info (with albums) [DONE]
+/api/artists/123/tracks - array of tracks for artist [DONE]
 
 /api/albums - array of all albums ordered a-z (paged)
 /api/albums/123 - album info (with artist)

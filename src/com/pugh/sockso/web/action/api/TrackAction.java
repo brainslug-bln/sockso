@@ -62,7 +62,7 @@ public class TrackAction extends ApiAction {
     
     protected void showTrack( final Track track ) throws IOException {
         
-        TTrack tpl = new TTrack();
+        final TTrack tpl = new TTrack();
         tpl.setTrack( track );
         
         getResponse().showJson( tpl.makeRenderer() );

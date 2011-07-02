@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Vector;
 
-public class ArtistTracks extends ApiAction {
+public class ArtistTracksAction extends ApiAction {
     
     /**
      *  Indicates if the action can handle the request
@@ -62,7 +62,7 @@ public class ArtistTracks extends ApiAction {
     
     protected void showTracks( final Vector<Track> tracks ) throws IOException {
         
-        TTracks tpl = new TTracks();
+        final TTracks tpl = new TTracks();
         tpl.setTracks( tracks );
         
         getResponse().showJson( tpl.makeRenderer() );

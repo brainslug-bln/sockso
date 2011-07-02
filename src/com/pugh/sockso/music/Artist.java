@@ -9,6 +9,11 @@
 
 package com.pugh.sockso.music;
 
+import com.pugh.sockso.Utils;
+import com.pugh.sockso.db.Database;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -45,4 +50,49 @@ public class Artist extends MusicItem {
     public int getAlbumCount() { return albumCount; }
     public int getPlayCount() { return playCount; }
 
+    /**
+     *  Find an artist by ID
+     * 
+     *  @param db
+     *  @param id
+     * 
+     *  @throws SQLException
+     * 
+     *  @return 
+     * 
+     */
+    
+    public static Artist find( final Database db, final int id ) throws SQLException {
+        
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        
+        try {
+            
+            final String sql = " select ar.id, ar.name " +
+                               " from artists ar " +
+                               " where id = ? ";
+            
+            st = db.prepare( sql );
+            st.setInt( 1, id );
+            rs = st.executeQuery();
+            
+            if ( rs.next() ) {
+                return new Artist(
+                    rs.getInt( "id" ),
+                    rs.getString( "name" )
+                );
+            }
+            
+        }
+        
+        finally {
+            Utils.close( st );
+            Utils.close( rs );
+        }
+        
+        return null;
+        
+    }
+    
 }

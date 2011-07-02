@@ -16,7 +16,7 @@
 
 <%for final Track track : tracks %>
     <%if !isFirst%>,</%if>
-    <%if isFirst%><%java>isFirst = false;</%java></%if>
+    <%java>isFirst = false;</%java>
     {
         "id": "<% track.getId() %>",
         "name": "<% track.getName() %>"

@@ -5,13 +5,13 @@ import com.pugh.sockso.tests.SocksoTestCase;
 import com.pugh.sockso.tests.TestDatabase;
 import com.pugh.sockso.tests.TestResponse;
 
-public class ArtistTracksTest extends SocksoTestCase {
+public class ArtistTracksActionTest extends SocksoTestCase {
 
-    private ArtistTracks action;
+    private ArtistTracksAction action;
     
     @Override
     protected void setUp() {
-        action = new ArtistTracks();
+        action = new ArtistTracksAction();
     }
     
     public void testActionHandlesArtistTracksUrls() {

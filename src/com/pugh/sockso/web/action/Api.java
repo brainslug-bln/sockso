@@ -4,7 +4,8 @@ package com.pugh.sockso.web.action;
 import com.pugh.sockso.web.BadRequestException;
 import com.pugh.sockso.web.Request;
 import com.pugh.sockso.web.action.api.ApiAction;
-import com.pugh.sockso.web.action.api.ArtistTracks;
+import com.pugh.sockso.web.action.api.ArtistAction;
+import com.pugh.sockso.web.action.api.ArtistTracksAction;
 import com.pugh.sockso.web.action.api.PlaylistsAction;
 import com.pugh.sockso.web.action.api.RootAction;
 import com.pugh.sockso.web.action.api.TrackAction;
@@ -75,10 +76,22 @@ public class Api extends WebAction {
     protected ApiAction[] getApiActions() {
 
         return new ApiAction[] {
+            
             new RootAction(),
+            
+            // playlists
+            
             new PlaylistsAction(),
+            
+            // tracks
+            
             new TrackAction(),
-            new ArtistTracks()
+            
+            // artists
+            
+            new ArtistTracksAction(),
+            new ArtistAction()
+
         };
 
     }

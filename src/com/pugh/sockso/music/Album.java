@@ -1,15 +1,14 @@
-/*
- * Album.java
- * 
- * Created on May 17, 2007, 11:00:06 AM
- * 
- * Represents an album in the collection
- * 
- */
 
 package com.pugh.sockso.music;
 
+import com.pugh.sockso.Utils;
+import com.pugh.sockso.db.Database;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import java.util.Date;
+import java.util.Vector;
 
 public class Album extends MusicItem {
 
@@ -62,4 +61,53 @@ public class Album extends MusicItem {
     public Date getDateAdded() { return new Date(dateAdded.getTime()); }
     public int getPlayCount() { return playCount; }
 
+    /**
+     *  Find albums for the specified artist
+     * 
+     *  @param db
+     *  @param artistId
+     * 
+     *  @throws SQLException
+     * 
+     *  @return 
+     * 
+     */
+    
+    public static Vector<Album> findByArtistId( final Database db, final int artistId ) throws SQLException {
+        
+        final Vector<Album> albums = new Vector<Album>();
+        
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        
+        try {
+            
+            final String sql = " select al.id, al.name, al.year " +
+                               " from albums al " +
+                               " where al.artist_id = ? ";
+            
+            st = db.prepare( sql );
+            st.setInt( 1, artistId );
+            rs = st.executeQuery();
+            
+            while ( rs.next() ) {
+                albums.add(new Album(
+                    null,
+                    rs.getInt( "id" ),
+                    rs.getString( "name" ),
+                    rs.getString( "year" )
+                ));
+            }
+            
+            return albums;
+            
+        }
+        
+        finally {
+            Utils.close( st );
+            Utils.close( rs );
+        }
+        
+    }
+    
 }

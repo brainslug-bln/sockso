@@ -2,8 +2,10 @@
 package com.pugh.sockso.music;
 
 import com.pugh.sockso.tests.SocksoTestCase;
+import com.pugh.sockso.tests.TestDatabase;
 
 import java.util.Date;
+import java.util.Vector;
 
 public class AlbumTest extends SocksoTestCase {
     
@@ -69,6 +71,19 @@ public class AlbumTest extends SocksoTestCase {
 
     public void testEmptyStringReturnedWhenDateIsNull() {
         assertEquals( "", new Album(1,"",1,"",null).getYear() );
+    }
+    
+    public void testFindbyartistidReturnsAllAlbumsForTheSpecifiedArtist() throws Exception {
+        TestDatabase db = new TestDatabase();
+        db.fixture( "artistsAlbumsAndTracks" );
+        Vector<Album> albums = Album.findByArtistId( db, 1 );
+        assertEquals( 2, albums.size() );
+    }
+    
+    public void testFindbyartistidReturnsNoAlbumsOnInvalidArtistId() throws Exception {
+        TestDatabase db = new TestDatabase();
+        Vector<Album> albums = Album.findByArtistId( db, 999 );
+        assertEquals( 0, albums.size() );
     }
     
 }
