@@ -1,30 +1,31 @@
-/*
- * Artist.java
- * 
- * Created on May 17, 2007, 10:59:59 AM
- * 
- * Represents an artist in the collection
- * 
- */
 
 package com.pugh.sockso.music;
 
 import com.pugh.sockso.Utils;
 import com.pugh.sockso.db.Database;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import java.util.Date;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
 public class Artist extends MusicItem {
     
-    private final int albumCount, trackCount, playCount;
-    private final Date dateAdded;
-
     private static Logger log = Logger.getLogger( CollectionManager.class );
 
+    private final int albumCount, trackCount, playCount;
+    
+    private final Date dateAdded;
+
+    /**
+     *  Constructors for creating artists with carying amount of info
+     * 
+     */
+    
     public Artist( final int id, final String name ) {
         this( id, name, null, -1, -1 );
     }
@@ -45,6 +46,11 @@ public class Artist extends MusicItem {
         this.playCount = playCount;
     }
 
+    /**
+     *  Getters for artist info
+     * 
+     */
+    
     public Date getDateAdded() { return new Date(dateAdded.getTime()); }
     public int getTrackCount() { return trackCount; }
     public int getAlbumCount() { return albumCount; }
@@ -90,6 +96,12 @@ public class Artist extends MusicItem {
             Utils.close( st );
             Utils.close( rs );
         }
+        
+        return null;
+        
+    }
+    
+    public static Vector<Artist> findAll( final Database db, final int limit, final int offset ) {
         
         return null;
         

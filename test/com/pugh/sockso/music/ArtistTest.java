@@ -47,4 +47,16 @@ public class ArtistTest extends SocksoTestCase {
         assertNull( Artist.find(new TestDatabase(),123) );
     }
     
+    public void testFindallReturnsAllArtists() {
+        
+    }
+    
+    public void testFindallCanBeLimited() {
+        
+    }
+    
+    public void testFindallCanBeOffset() {
+        
+    }
+    
 }
