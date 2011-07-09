@@ -110,4 +110,51 @@ public class Album extends MusicItem {
         
     }
     
+    /**
+     *  Finds an album by id, returns null if not found
+     * 
+     *  @param db
+     *  @param id
+     * 
+     *  @throws SQLException
+     * 
+     *  @return 
+     * 
+     */
+    
+    public static Album find( final Database db, final int id ) throws SQLException {
+        
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        
+        try {
+            
+            final String sql = " select al.id, al.name, al.year " +
+                               " from albums al " +
+                               " where al.id = ? ";
+            
+            st = db.prepare( sql );
+            st.setInt( 1, id );
+            rs = st.executeQuery();
+            
+            if ( rs.next() ) {
+                return new Album(
+                    null,
+                    rs.getInt( "id" ),
+                    rs.getString( "name" ),
+                    rs.getString( "year" )
+                );
+            }
+            
+        }
+        
+        finally {
+            Utils.close( st );
+            Utils.close( rs );
+        }
+        
+        return null;
+        
+    }
+    
 }

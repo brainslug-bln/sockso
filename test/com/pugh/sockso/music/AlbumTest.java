@@ -86,4 +86,17 @@ public class AlbumTest extends SocksoTestCase {
         assertEquals( 0, albums.size() );
     }
     
+    public void testFindReturnsAlbumRequestedById() throws Exception {
+        TestDatabase db = new TestDatabase();
+        db.fixture( "albumTracks" );
+        Album album = Album.find( db, 1 );
+        assertEquals( 1, album.getId() );
+        assertEquals( "An Album", album.getName() );
+    }
+    
+    public void testFindReturnsNullWhenAlbumNotFound() {
+        TestDatabase db = new TestDatabase();
+        assertNull( Album.find( db, 1 ) );
+    }
+    
 }
