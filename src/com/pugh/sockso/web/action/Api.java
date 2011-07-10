@@ -9,6 +9,7 @@ import com.pugh.sockso.web.action.api.ArtistAction;
 import com.pugh.sockso.web.action.api.ArtistTracksAction;
 import com.pugh.sockso.web.action.api.PlaylistsAction;
 import com.pugh.sockso.web.action.api.RootAction;
+import com.pugh.sockso.web.action.api.SessionAction;
 import com.pugh.sockso.web.action.api.TrackAction;
 
 import org.apache.log4j.Logger;
@@ -125,6 +126,7 @@ public class Api extends BaseAction {
         return new ApiAction[] {
             
             new RootAction(),
+            new SessionAction(),
             
             // playlists
             
