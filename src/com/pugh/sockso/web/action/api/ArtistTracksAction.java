@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Vector;
 
-public class ArtistTracksAction extends ApiAction {
+public class ArtistTracksAction extends BaseApiAction {
     
     /**
      *  Indicates if the action can handle the request

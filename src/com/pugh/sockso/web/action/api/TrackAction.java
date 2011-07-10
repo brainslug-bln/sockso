@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import java.sql.SQLException;
 
-public class TrackAction extends ApiAction {
+public class TrackAction extends BaseApiAction {
     
     /**
      *  Indicates if this action can handle the request

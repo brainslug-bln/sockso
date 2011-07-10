@@ -6,7 +6,7 @@ import com.pugh.sockso.web.Request;
 
 import java.io.IOException;
 
-public class RootAction extends ApiAction {
+public class RootAction extends BaseApiAction {
 
     /**
      *  Handles requests to /

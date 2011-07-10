@@ -283,5 +283,23 @@ public class SocksoTestCase extends TestCase {
         return new TestRequest( "GET " +url+ " HTTP/1.1" );
 
     }
+    
+    /**
+     *  Asserts a string ends with the specified string
+     * 
+     *  @param str 
+     *  @param substring
+     * 
+     */
+    
+    protected void assertEndsWith( final String str, final String substring ) {
+        
+        final String endString = str.substring( str.length() - substring.length() );
+        
+        if ( !endString.equals(substring) ) {
+            fail( "Expected string to end with '" +substring+ "'" );
+        }
+        
+    }
 
 }

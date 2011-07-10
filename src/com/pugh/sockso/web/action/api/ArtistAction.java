@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 import java.util.Vector;
 
-public class ArtistAction extends ApiAction {
+public class ArtistAction extends BaseApiAction {
     
     /**
      *  Indicates if the action can handle the request

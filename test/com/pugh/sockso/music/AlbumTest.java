@@ -94,7 +94,7 @@ public class AlbumTest extends SocksoTestCase {
         assertEquals( "An Album", album.getName() );
     }
     
-    public void testFindReturnsNullWhenAlbumNotFound() {
+    public void testFindReturnsNullWhenAlbumNotFound() throws Exception {
         TestDatabase db = new TestDatabase();
         assertNull( Album.find( db, 1 ) );
     }

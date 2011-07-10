@@ -6,7 +6,7 @@ import com.pugh.sockso.web.Request;
 
 import java.util.Vector;
 
-public class ArtistsAction extends ApiAction {
+public class ArtistsAction extends BaseApiAction {
 
     /**
      *  Indicates if the action can handle the request

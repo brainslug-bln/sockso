@@ -22,7 +22,7 @@ import com.pugh.sockso.web.action.Sharer;
 import com.pugh.sockso.web.action.Streamer;
 import com.pugh.sockso.web.action.Uploader;
 import com.pugh.sockso.web.action.Userer;
-import com.pugh.sockso.web.action.WebAction;
+import com.pugh.sockso.web.action.BaseAction;
 
 import com.pugh.sockso.web.action.admin.Console;
 
@@ -77,12 +77,12 @@ public class Dispatcher {
      * 
      */
     
-    public WebAction getAction( final Request req ) {
+    public BaseAction getAction( final Request req ) {
 
         final String command = req.getUrlParam( 0 );
         final String host = getHost();
 
-        WebAction action = null;
+        BaseAction action = null;
         
         if ( command.equals("file") )
             action = new FileServer( r );
@@ -158,7 +158,7 @@ public class Dispatcher {
      * 
      */
     
-    protected WebAction getBrowseAction( final Request req ) {
+    protected BaseAction getBrowseAction( final Request req ) {
         
         final String command = req.getUrlParam( 1 );
         

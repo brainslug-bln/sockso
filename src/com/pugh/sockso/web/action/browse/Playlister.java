@@ -16,7 +16,7 @@ import com.pugh.sockso.music.Track;
 import com.pugh.sockso.templates.web.browse.TPlaylist;
 import com.pugh.sockso.web.BadRequestException;
 import com.pugh.sockso.web.Request;
-import com.pugh.sockso.web.action.WebAction;
+import com.pugh.sockso.web.action.BaseAction;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,7 +25,7 @@ import java.sql.PreparedStatement;
 import java.io.IOException;
 import java.util.Vector;
 
-public class Playlister extends WebAction {
+public class Playlister extends BaseAction {
     
     /**
      *  handles the "browse" command, this sends HTML pages to the user for

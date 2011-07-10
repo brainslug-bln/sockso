@@ -21,7 +21,7 @@ import java.sql.SQLException;
  *  End point for Sockso Web API methods.
  * 
  */
-public class Api extends WebAction {
+public class Api extends BaseAction {
 
     private static final Logger log = Logger.getLogger( Api.class );
 
@@ -37,11 +37,39 @@ public class Api extends WebAction {
     @Override
     public void handleRequest() throws BadRequestException {
 
+        processActions( getApiActions() );
+        
+    }
+    
+    /**
+     *  This action does not require a login, but it controls logged in/out control
+     *  for its sub actions.
+     * 
+     *  @return 
+     * 
+     */
+    
+    @Override
+    public boolean requiresLogin() {
+        
+        return false;
+        
+    }
+    
+    /**
+     *  Processes the specified API actions until one handles the request
+     * 
+     *  @param actions 
+     * 
+     */
+    
+    protected void processActions( final ApiAction[] actions ) throws BadRequestException {
+        
         final Request req = getRequest();
         
-        for ( final ApiAction action : getApiActions() ) {
+        for ( final ApiAction action : actions ) {
 
-            if ( action.canHandle(req) ) {
+            if ( action.canHandle(req) && loginStatusOk(action) ) {
                 
                 log.debug( "Run API action: " +action.getClass().getName() );
             
@@ -65,6 +93,24 @@ public class Api extends WebAction {
         }
 
         throw new BadRequestException( "Unknown API Action" );
+
+    }
+
+    /**
+     *  Indicates if the currently logged in status of the user is ok for
+     *  running this action.
+     * 
+     *  @param action
+     * 
+     *  @return
+     * 
+     */
+    
+    private boolean loginStatusOk( final ApiAction action ) {
+
+        return action.requiresLogin() && getUser() == null
+            ? false
+            : true;
 
     }
 

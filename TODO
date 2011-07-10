@@ -67,3 +67,5 @@ be adjusted using "limit" and "offset" parameters.  Requests should be GET.
 
 /api/playlists - array of all playlists, newest first (paged)
 /api/playlists/123 - array of music items for playlist (track, album or artist)
+
+/api/session - returns '1' or '0' depending on if the session is valid
