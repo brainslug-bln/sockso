@@ -123,8 +123,6 @@ public class Session {
 
     protected User getCurrentUser() throws SQLException {
 
-        log.debug( "Getting user from session" );
-
         User user = null;
         ResultSet rs = null;
         PreparedStatement st = null;
@@ -139,10 +137,6 @@ public class Session {
                                    " on s.user_id = u.id " +
                                " where s.id = ? " +
                                    " and s.code = ? ";
-
-            log.debug( "SessId: " +sessId );
-            log.debug( "SessCode: " +sessCode );
-            log.debug( "Session query: " +sql );
 
             st = db.prepare( sql );
             st.setInt( 1, sessId );
@@ -192,8 +186,6 @@ public class Session {
 
     protected int fetchSessionId( final Request req ) {
 
-        log.debug( "Get session ID" );
-
         try {
 
             final String[] sessIds = new String[] {
@@ -202,7 +194,6 @@ public class Session {
             };
 
             for ( final String sessId : sessIds ) {
-                log.debug( "Try: " +sessId );
                 if ( sessId.matches("^\\d+$") )
                     return Integer.parseInt( sessId );
             }
