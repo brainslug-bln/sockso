@@ -5,7 +5,7 @@ import com.pugh.sockso.tests.SocksoTestCase;
 
 public class RootActionTest extends SocksoTestCase {
 
-    private ApiAction action;
+    private BaseApiAction action;
     
     @Override
     protected void setUp() {

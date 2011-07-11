@@ -60,10 +60,12 @@ be adjusted using "limit" and "offset" parameters.  Requests should be GET.
 
 /api/albums - array of all albums ordered a-z (paged)
 /api/albums/123 - album info (with artist)
-/api/albums/123/tracks - array of tracks for album
+/api/albums/123/tracks - array of tracks for album [DONE]
 
 /api/tracks - array of all tracks ordered a-z (paged)
 /api/tracks/123 - track info, artist and album [DONE]
 
 /api/playlists - array of all playlists, newest first (paged)
 /api/playlists/123 - array of music items for playlist (track, album or artist)
+
+/api/session - returns '1' or '0' depending on if the session is valid [DONE]

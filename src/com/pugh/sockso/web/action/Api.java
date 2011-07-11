@@ -3,11 +3,13 @@ package com.pugh.sockso.web.action;
 
 import com.pugh.sockso.web.BadRequestException;
 import com.pugh.sockso.web.Request;
+import com.pugh.sockso.web.action.api.AlbumTracksAction;
 import com.pugh.sockso.web.action.api.ApiAction;
 import com.pugh.sockso.web.action.api.ArtistAction;
 import com.pugh.sockso.web.action.api.ArtistTracksAction;
 import com.pugh.sockso.web.action.api.PlaylistsAction;
 import com.pugh.sockso.web.action.api.RootAction;
+import com.pugh.sockso.web.action.api.SessionAction;
 import com.pugh.sockso.web.action.api.TrackAction;
 
 import org.apache.log4j.Logger;
@@ -20,7 +22,7 @@ import java.sql.SQLException;
  *  End point for Sockso Web API methods.
  * 
  */
-public class Api extends WebAction {
+public class Api extends BaseAction {
 
     private static final Logger log = Logger.getLogger( Api.class );
 
@@ -36,11 +38,39 @@ public class Api extends WebAction {
     @Override
     public void handleRequest() throws BadRequestException {
 
+        processActions( getApiActions() );
+        
+    }
+    
+    /**
+     *  This action does not require a login, but it controls logged in/out control
+     *  for its sub actions.
+     * 
+     *  @return 
+     * 
+     */
+    
+    @Override
+    public boolean requiresLogin() {
+        
+        return false;
+        
+    }
+    
+    /**
+     *  Processes the specified API actions until one handles the request
+     * 
+     *  @param actions 
+     * 
+     */
+    
+    protected void processActions( final ApiAction[] actions ) throws BadRequestException {
+        
         final Request req = getRequest();
         
-        for ( final ApiAction action : getApiActions() ) {
+        for ( final ApiAction action : actions ) {
 
-            if ( action.canHandle(req) ) {
+            if ( action.canHandle(req) && loginStatusOk(action) ) {
                 
                 log.debug( "Run API action: " +action.getClass().getName() );
             
@@ -68,6 +98,24 @@ public class Api extends WebAction {
     }
 
     /**
+     *  Indicates if the currently logged in status of the user is ok for
+     *  running this action.
+     * 
+     *  @param action
+     * 
+     *  @return
+     * 
+     */
+    
+    private boolean loginStatusOk( final ApiAction action ) {
+
+        return action.requiresLogin() && getUser() == null
+            ? false
+            : true;
+
+    }
+
+    /**
      *  Returns an array of all the api actions
      * 
      *  @return
@@ -78,6 +126,7 @@ public class Api extends WebAction {
         return new ApiAction[] {
             
             new RootAction(),
+            new SessionAction(),
             
             // playlists
             
@@ -90,7 +139,11 @@ public class Api extends WebAction {
             // artists
             
             new ArtistTracksAction(),
-            new ArtistAction()
+            new ArtistAction(),
+            
+            // albums
+            
+            new AlbumTracksAction()
 
         };
 

@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import java.sql.SQLException;
 
-public class PlaylistsAction extends ApiAction {
+public class PlaylistsAction extends BaseApiAction {
 
     public boolean canHandle( final Request req ) {
         
