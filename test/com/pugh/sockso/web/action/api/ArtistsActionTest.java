@@ -29,7 +29,7 @@ public class ArtistsActionTest extends SocksoTestCase {
     protected void createArtists( int numOfArtists ) throws SQLException {
         for ( int i=0; i<numOfArtists; i++ ) {
             String name = Utils.getRandomString( 20 );
-            db.update( " insert into artists ( name, date_added ) values ( '" +name+ "', '2011-01-01 00:00:00' ) " );
+            db.update( " insert into artists ( name, date_added ) values ( '" +name+ "', '2011-01-01 01:02:03' ) " );
         }
     }
     
@@ -76,11 +76,18 @@ public class ArtistsActionTest extends SocksoTestCase {
         createArtists( 150 );
         action.setRequest(getRequest( "/api/artists?limit=-1" ));
         action.handleRequest();
-        assertSubstringCount( 150, res.getOutput(), "\"id\":" );
+        assertSubstringCount( 152, res.getOutput(), "\"id\":" ); // 150 + 2 from fixture
     }
     
     public void testArtistsAreListedAlphabeticallyAscending() {
         
+    }
+    
+    public void testArtistsListedIncludeDateArtistWasAdded() throws Exception {
+        createArtists( 1 );
+        action.setRequest(getRequest( "/api/artists" ));
+        action.handleRequest();
+        assertContains( res.getOutput(), "2011-01-01" );
     }
     
 }

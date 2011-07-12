@@ -302,7 +302,28 @@ public class SocksoTestCase extends TestCase {
         
     }
     
+    /**
+     *  Asserts a string contains the specified number of occurances of the substring
+     * 
+     *  @param expected
+     *  @param str
+     *  @param substr 
+     * 
+     */
+    
     protected void assertSubstringCount( final int expected, final String str, final String substr ) {
+        
+        int position = 0;
+        int total = 0;
+        
+        while ( (position = str.indexOf( substr, position )) != -1 ) {
+            position += substr.length();
+            total++;
+        }
+        
+        if ( total != expected ) {
+            fail( "Expctected to find " +expected+ " occurances of '" +substr+ "', but found " +total );
+        }
         
     }
 

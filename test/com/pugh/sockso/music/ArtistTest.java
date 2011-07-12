@@ -85,4 +85,10 @@ public class ArtistTest extends SocksoTestCase {
         assertEquals( "Xylophone", artists.elementAt(2).getName() );
     }
     
+    public void testFindallReturnsArtistsWithTheirDateAddedSet() throws Exception {
+        db.fixture( "artists" );
+        Vector<Artist> artists = Artist.findAll( db, -1, 0 );
+        assertEquals( "2011-02-03", artists.elementAt(0).getDateAdded().toString() );
+    }
+    
 }

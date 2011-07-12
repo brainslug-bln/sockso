@@ -40,7 +40,7 @@ public class Artist extends MusicItem {
     
     public Artist( final int id, final String name, final Date dateAdded, final int albumCount, final int trackCount, final int playCount ) {
         super( MusicItem.ARTIST, id, name );
-        this.dateAdded = ( dateAdded != null ) ? new Date(dateAdded.getTime()) : null;
+        this.dateAdded = dateAdded;
         this.albumCount = albumCount;
         this.trackCount = trackCount;
         this.playCount = playCount;
@@ -51,7 +51,7 @@ public class Artist extends MusicItem {
      * 
      */
     
-    public Date getDateAdded() { return new Date(dateAdded.getTime()); }
+    public Date getDateAdded() { return dateAdded; }
     public int getTrackCount() { return trackCount; }
     public int getAlbumCount() { return albumCount; }
     public int getPlayCount() { return playCount; }
@@ -121,7 +121,7 @@ public class Artist extends MusicItem {
         
         try {
             
-            String sql = " select ar.id, ar.name " +
+            String sql = " select ar.id, ar.name, ar.date_added " +
                                " from artists ar " +
                                " order by ar.name asc ";
             
@@ -138,7 +138,10 @@ public class Artist extends MusicItem {
             while ( rs.next() ) {
                 Artist artist = new Artist(
                     rs.getInt( "id" ),
-                    rs.getString( "name" )
+                    rs.getString( "name" ),
+                    rs.getDate( "date_added" ),
+                    -1,
+                    -1
                 );
                 artists.add( artist );
             }

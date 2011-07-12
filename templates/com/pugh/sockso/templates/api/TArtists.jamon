@@ -20,7 +20,8 @@
 
         {
             "id": "<% artist.getId() %>",
-            "name": "<% artist.getName() %>"
+            "name": "<% artist.getName() %>",
+            "date_added": "<% artist.getDateAdded().toString() %>"
         }
 
     </%for>
