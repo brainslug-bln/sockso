@@ -301,5 +301,9 @@ public class SocksoTestCase extends TestCase {
         }
         
     }
+    
+    protected void assertSubstringCount( final int expected, final String str, final String substr ) {
+        
+    }
 
 }

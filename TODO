@@ -52,6 +52,7 @@ API Ideas
 All endpoints return JSON, and will start off being read-only.  The endpoints
 that are marked as "paged" return 100 items at a time maximum, but this can
 be adjusted using "limit" and "offset" parameters.  Requests should be GET.
+A "limit" of -1 means no limit.  Offset can only be specified with a limit.
 
 /api - (server info, same as /json/serverinfo) [DONE]
 /api/artists - array of all artists ordered a-z (paged)

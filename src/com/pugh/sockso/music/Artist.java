@@ -101,9 +101,56 @@ public class Artist extends MusicItem {
         
     }
     
-    public static Vector<Artist> findAll( final Database db, final int limit, final int offset ) {
+    /**
+     *  Find all artists, listed alphabetically, with the specified offset and limit
+     * 
+     *  @param db
+     *  @param limit
+     *  @param offset
+     * 
+     *  @throws SQLException
+     * 
+     *  @return 
+     * 
+     */
+    
+    public static Vector<Artist> findAll( final Database db, final int limit, final int offset ) throws SQLException {
         
-        return null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        
+        try {
+            
+            String sql = " select ar.id, ar.name " +
+                               " from artists ar " +
+                               " order by ar.name asc ";
+            
+            if ( limit != -1 ) {
+                sql += " limit " +limit+ " " +
+                       " offset " +offset;
+            }
+
+            st = db.prepare( sql );
+            rs = st.executeQuery();
+
+            final Vector<Artist> artists = new Vector<Artist>();
+            
+            while ( rs.next() ) {
+                Artist artist = new Artist(
+                    rs.getInt( "id" ),
+                    rs.getString( "name" )
+                );
+                artists.add( artist );
+            }
+            
+            return artists;
+
+        }
+        
+        finally {
+            Utils.close( rs );
+            Utils.close( st );
+        }
         
     }
     

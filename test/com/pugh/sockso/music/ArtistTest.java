@@ -5,8 +5,16 @@ import com.pugh.sockso.tests.SocksoTestCase;
 import com.pugh.sockso.tests.TestDatabase;
 
 import java.util.Date;
+import java.util.Vector;
 
 public class ArtistTest extends SocksoTestCase {
+    
+    private TestDatabase db;
+    
+    @Override
+    protected void setUp() {
+        db = new TestDatabase();
+    }
     
     public void testConstructors() {
         
@@ -36,7 +44,6 @@ public class ArtistTest extends SocksoTestCase {
     }
 
     public void testFindReturnsArtistById() throws Exception {
-        TestDatabase db = new TestDatabase();
         db.fixture( "singleTrack" );
         Artist artist = Artist.find( db, 1 );
         assertEquals( 1, artist.getId() );
@@ -47,16 +54,35 @@ public class ArtistTest extends SocksoTestCase {
         assertNull( Artist.find(new TestDatabase(),123) );
     }
     
-    public void testFindallReturnsAllArtists() {
-        
+    public void testFindallReturnsAllArtists() throws Exception {
+        db.fixture( "artists" );
+        Vector<Artist> artists = Artist.findAll( db, 3, 0 );
+        assertEquals( 3, artists.size() );
     }
     
-    public void testFindallCanBeLimited() {
-        
+    public void testFindallCanBeLimited() throws Exception {
+        db.fixture( "artists" );
+        Vector<Artist> artists = Artist.findAll( db, 2, 0 );
+        assertEquals( 2, artists.size() );
     }
     
-    public void testFindallCanBeOffset() {
-        
+    public void testFindallCanBeOffset() throws Exception {
+        db.fixture( "artists" );
+        Vector<Artist> artists = Artist.findAll( db, 3, 1 );
+        assertEquals( 2, artists.size() );
+    }
+    
+    public void testFindallLimitOfMinusOneMeansNoLimit() throws Exception {
+        db.fixture( "artists" );
+        Vector<Artist> artists = Artist.findAll( db, -1, 0 );
+        assertEquals( 3, artists.size() );
+    }
+    
+    public void testFindallReturnsArtistsAlphabetically() throws Exception {
+        db.fixture( "artists" );
+        Vector<Artist> artists = Artist.findAll( db, -1, 0 );
+        assertEquals( "A Artist", artists.elementAt(0).getName() );
+        assertEquals( "Xylophone", artists.elementAt(2).getName() );
     }
     
 }
