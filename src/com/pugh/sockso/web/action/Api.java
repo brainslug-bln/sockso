@@ -7,6 +7,7 @@ import com.pugh.sockso.web.action.api.AlbumTracksAction;
 import com.pugh.sockso.web.action.api.ApiAction;
 import com.pugh.sockso.web.action.api.ArtistAction;
 import com.pugh.sockso.web.action.api.ArtistTracksAction;
+import com.pugh.sockso.web.action.api.ArtistsAction;
 import com.pugh.sockso.web.action.api.PlaylistsAction;
 import com.pugh.sockso.web.action.api.RootAction;
 import com.pugh.sockso.web.action.api.SessionAction;
@@ -140,6 +141,7 @@ public class Api extends BaseAction {
             
             new ArtistTracksAction(),
             new ArtistAction(),
+            new ArtistsAction(),
             
             // albums
             

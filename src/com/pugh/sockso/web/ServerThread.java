@@ -191,9 +191,11 @@ public class ServerThread extends Thread {
     
     private void showException( final BadRequestException e, final Request req, final Response res, final boolean showStackTrace ) {
 
-        log.error( e );
-//        if ( showStackTrace )
+        log.error( e.getMessage() );
+        
+        if ( showStackTrace ) {
             e.printStackTrace();
+        }
 
         final Errorer err = new Errorer( e, showStackTrace );
         err.setRequest( req );
