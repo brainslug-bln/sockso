@@ -1,6 +1,8 @@
 
 package com.pugh.sockso.web.action;
 
+import com.pugh.sockso.Constants;
+import com.pugh.sockso.Properties;
 import com.pugh.sockso.web.BadRequestException;
 import com.pugh.sockso.web.Request;
 import com.pugh.sockso.web.action.api.AlbumTracksAction;
@@ -110,9 +112,13 @@ public class Api extends BaseAction {
     
     private boolean loginStatusOk( final ApiAction action ) {
 
-        return action.requiresLogin() && getUser() == null
-            ? false
-            : true;
+        if ( getProperties().get(Constants.WWW_USERS_REQUIRE_LOGIN).equals(Properties.YES) ) {
+            return action.requiresLogin() && getUser() == null
+                ? false
+                : true;
+        }
+
+        return true;
 
     }
 
