@@ -9,6 +9,13 @@ import java.util.Vector;
 
 public class AlbumTest extends SocksoTestCase {
     
+    private TestDatabase db;
+    
+    @Override
+    protected void setUp() {
+        db = new TestDatabase();
+    }
+    
     public void testConstructor() {
 
         final int id = 123, artistId = 456, trackCount = 789, playCount = 159;
@@ -74,20 +81,17 @@ public class AlbumTest extends SocksoTestCase {
     }
     
     public void testFindbyartistidReturnsAllAlbumsForTheSpecifiedArtist() throws Exception {
-        TestDatabase db = new TestDatabase();
         db.fixture( "artistsAlbumsAndTracks" );
         Vector<Album> albums = Album.findByArtistId( db, 1 );
         assertEquals( 2, albums.size() );
     }
     
     public void testFindbyartistidReturnsNoAlbumsOnInvalidArtistId() throws Exception {
-        TestDatabase db = new TestDatabase();
         Vector<Album> albums = Album.findByArtistId( db, 999 );
         assertEquals( 0, albums.size() );
     }
     
     public void testFindReturnsAlbumRequestedById() throws Exception {
-        TestDatabase db = new TestDatabase();
         db.fixture( "albumTracks" );
         Album album = Album.find( db, 1 );
         assertEquals( 1, album.getId() );
@@ -95,8 +99,39 @@ public class AlbumTest extends SocksoTestCase {
     }
     
     public void testFindReturnsNullWhenAlbumNotFound() throws Exception {
-        TestDatabase db = new TestDatabase();
         assertNull( Album.find( db, 1 ) );
+    }
+    
+    public void testFindallReturnsAllAlbums() throws Exception {
+        db.fixture( "albums" );
+        Vector<Album> albums = Album.findAll( db, 100, 0 );
+        assertEquals( 3, albums.size() );
+    }
+    
+    public void testFindallCanBeLimited() throws Exception {
+        db.fixture( "albums" );
+        Vector<Album> albums = Album.findAll( db, 2, 0 );
+        assertEquals( 2, albums.size() );
+    }
+    
+    public void testFindallCanBeOffset() throws Exception {
+        db.fixture( "albums" );
+        Vector<Album> albums = Album.findAll( db, 3, 1 );
+        assertEquals( 2, albums.size() );
+    }
+    
+    public void testLimitOfMinusOneToFindallMeansNoLimit() throws Exception {
+        db.fixture( "albums" );
+        Vector<Album> albums = Album.findAll( db, -1, 0 );
+        assertEquals( 3, albums.size() );
+    }
+    
+    public void testFindallReturnsAlbumsLexicographically() throws Exception {
+        db.fixture( "albums" );
+        Vector<Album> albums = Album.findAll( db, -1, 0 );
+        assertEquals( "Another Album", albums.get(0).getName() );
+        assertEquals( "Beta Third", albums.get(1).getName() );
+        assertEquals( "Zan Album", albums.get(2).getName() );
     }
     
 }

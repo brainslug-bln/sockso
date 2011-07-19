@@ -157,4 +157,58 @@ public class Album extends MusicItem {
         
     }
     
+    /**
+     *  Finds all albums, returns listed alphabetically
+     * 
+     *  @param db
+     *  @param limit
+     *  @param offset
+     * 
+     *  @return
+     * 
+     *  @throws SQLException 
+     * 
+     */
+    
+    public static Vector<Album> findAll( final Database db, final int limit, final int offset ) throws SQLException {
+        
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        
+        try {
+            
+            final Vector<Album> albums = new Vector<Album>();
+            
+            String sql = " select al.id, al.name, al.year " +
+                         " from albums al " +
+                         " order by al.name asc ";
+            
+            if ( limit != -1 ) {
+                sql += " limit " +limit+ " " +
+                       " offset " +offset;
+            }
+
+            st = db.prepare( sql );
+            rs = st.executeQuery();
+            
+            while ( rs.next() ) {
+                albums.add(new Album(
+                    null,
+                    rs.getInt( "id" ),
+                    rs.getString( "name" ),
+                    rs.getString( "year" )
+                ));
+            }
+            
+            return albums;
+            
+        }
+        
+        finally {
+            Utils.close( rs );
+            Utils.close( st );
+        }
+        
+    }
+    
 }
