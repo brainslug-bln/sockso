@@ -102,6 +102,12 @@ public class AlbumTest extends SocksoTestCase {
         assertNull( Album.find( db, 1 ) );
     }
     
+    public void testFindReturnsAlbumWithArtistInfo() throws Exception {
+        db.fixture( "albums" );
+        Album album = Album.find( db, 1 );
+        assertEquals( "A Artist", album.getArtist().getName() );
+    }
+    
     public void testFindallReturnsAllAlbums() throws Exception {
         db.fixture( "albums" );
         Vector<Album> albums = Album.findAll( db, 100, 0 );

@@ -129,8 +129,11 @@ public class Album extends MusicItem {
         
         try {
             
-            final String sql = " select al.id, al.name, al.year " +
+            final String sql = " select al.id, al.name, al.year, " +
+                                   " ar.id as artist_id, ar.name as artist_name " +
                                " from albums al " +
+                                   " inner join artists ar " +
+                                   " on ar.id = al.artist_id " +
                                " where al.id = ? ";
             
             st = db.prepare( sql );
@@ -139,7 +142,10 @@ public class Album extends MusicItem {
             
             if ( rs.next() ) {
                 return new Album(
-                    null,
+                    new Artist(
+                        rs.getInt( "artist_id" ),
+                        rs.getString( "artist_name" )
+                    ),
                     rs.getInt( "id" ),
                     rs.getString( "name" ),
                     rs.getString( "year" )
