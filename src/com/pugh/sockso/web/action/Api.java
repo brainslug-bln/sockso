@@ -7,6 +7,7 @@ import com.pugh.sockso.web.BadRequestException;
 import com.pugh.sockso.web.Request;
 import com.pugh.sockso.web.action.api.AlbumAction;
 import com.pugh.sockso.web.action.api.AlbumTracksAction;
+import com.pugh.sockso.web.action.api.AlbumsAction;
 import com.pugh.sockso.web.action.api.ApiAction;
 import com.pugh.sockso.web.action.api.ArtistAction;
 import com.pugh.sockso.web.action.api.ArtistTracksAction;
@@ -153,6 +154,7 @@ public class Api extends BaseAction {
             // albums
             
             new AlbumAction(),
+            new AlbumsAction(),
             new AlbumTracksAction()
 
         };
