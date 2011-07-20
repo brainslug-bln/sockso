@@ -108,4 +108,10 @@ public class PlaylistTest extends SocksoTestCase {
         assertEquals( "MyUser", playlists.get(1).getUser().getName() );
     }
     
+    public void testFindReturnsUserWhoCreatedPlaylistWhenThereIsOne() throws Exception {
+        db.fixture( "playlists" );
+        Playlist playlist = Playlist.find( db, 2 );
+        assertEquals( "MyUser", playlist.getUser().getName() );
+    }
+    
 }

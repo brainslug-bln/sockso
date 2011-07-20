@@ -66,7 +66,7 @@ A "limit" of -1 means no limit.  Offset can only be specified with a limit.
 /api/tracks - array of all tracks ordered a-z (paged)
 /api/tracks/123 - track info, artist and album [DONE]
 
-/api/playlists - array of all playlists, newest first (paged)
+/api/playlists - array of all playlists, newest first (paged) [DONE]
 /api/playlists/123 - array of music items for playlist (track, album or artist)
 /api/playlists/user - array of the current users playlists (paged)
 /api/playlists/site - array of site playlists

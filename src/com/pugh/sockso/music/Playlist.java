@@ -96,10 +96,7 @@ public class Playlist extends MusicItem {
     	try {
 
             final Vector<Playlist> lists = new Vector<Playlist>();
-            String sql = " select p.id, p.name, u.id as userId, u.name as userName " +
-                         " from playlists p " +
-                            " left outer join users u " +
-                            " on u.id = p.user_id " +
+            String sql = getSelectFromSql() +
                          " order by p.id desc ";
             
             if ( limit != -1 ) {
@@ -111,15 +108,7 @@ public class Playlist extends MusicItem {
             rs = st.executeQuery();
             
             while ( rs.next() ) {
-                final User user = rs.getString( "userId" ) != null
-                    ? new User( rs.getInt("userId"), rs.getString("userName") )
-                    : null;
-            	lists.add(new Playlist(
-                    rs.getInt( "id" ),
-                    rs.getString( "name" ),
-                    -1,
-                    user
-                ));
+                lists.add( createFromResultSet(rs) );
             }
             
             return lists;
@@ -131,6 +120,49 @@ public class Playlist extends MusicItem {
             Utils.close( st );
     	}
     	
+    }
+    
+    /**
+     *  Returns the 'SELECT (fields) FROM (joins) ' sql snippet for querying playlists
+     * 
+     *  @return 
+     * 
+     */
+    
+    protected static String getSelectFromSql() {
+        
+        return " select p.id, p.name, u.id as userId, u.name as userName " +
+               " from playlists p " +
+                   " left outer join users u " +
+                   " on u.id = p.user_id ";
+        
+    }
+    
+    /**
+     *  Creates a playlist object from a result set created using standard sql
+     *  select snippet
+     * 
+     *  @param rs
+     * 
+     *  @return
+     * 
+     *  @throws SQLException 
+     * 
+     */
+    
+    protected static Playlist createFromResultSet( final ResultSet rs ) throws SQLException {
+        
+        final User user = rs.getString( "userId" ) != null
+            ? new User( rs.getInt("userId"), rs.getString("userName") )
+            : null;
+        
+        return new Playlist(
+            rs.getInt( "id" ),
+            rs.getString( "name" ),
+            -1,
+            user
+        );
+
     }
 
     /**
@@ -150,19 +182,15 @@ public class Playlist extends MusicItem {
         
         try {
             
-            final String sql = " select id, name " +
-                               " from playlists " +
-                               " where id = ? ";
+            final String sql = getSelectFromSql() +
+                               " where p.id = ? ";
             
             st = db.prepare( sql );
             st.setInt( 1, id );
             rs = st.executeQuery();
             
             if ( rs.next() ) {
-                return new Playlist(
-                    rs.getInt( "id" ),
-                    rs.getString( "name" )
-                );
+                return createFromResultSet( rs );
             }
             
         }
