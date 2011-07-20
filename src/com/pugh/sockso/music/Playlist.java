@@ -78,69 +78,59 @@ public class Playlist extends MusicItem {
     }
     
     /**
-     *  returns a list of playlists for the user with given
-     *  limit and offset for the results.
+     *  Returns a list of playlists for the user with given limit and offset for the results.
      *  
      *  @param db database object to use
-     *  @param user user to fetch playlists
      *  @param limit max number of elements in the result
      *  @param offset offset for pagination
-     *  @param includeSiteLists whether to include site lists in the results.
-     *  @throws BadRequestException 
+     * 
+     *  @throws SQLException
      *  
      */
     
-    public static Vector<Playlist> getPlaylists( final Database db, final User user, int limit, int offset, boolean includeSiteLists ) throws SQLException, BadRequestException {
+    public static Vector<Playlist> findAll( final Database db, int limit, int offset ) throws SQLException {
     	
-    	final Vector<Playlist> lists = new Vector<Playlist>();
         PreparedStatement st = null;
         ResultSet rs = null;
 
-        if ( user == null && !includeSiteLists)
-            throw new BadRequestException("User is not logged in and site playlists are not selected...");
-
-        String sql = " select p.id as playlistId, p.name as playlistName, " +
-                     "        p.user_id as playlistUser, count(t.track_id) as trackCount " +
-                     " from playlists p, playlist_tracks t " +
-                     " where t.playlist_id = p.id and ( p.user_id = ? or p.user_id is null ) " +
-                     " group by playlistId, playlistName, playlistUser " +
-                     " limit ? offset ? ";
-    	
     	try {
-    		
-            st = db.prepare( sql );
-            st.setInt( 1, (user == null) ? -1 : user.getId() );
-            st.setInt( 2, limit );
-            st.setInt( 3, offset );
 
+            final Vector<Playlist> lists = new Vector<Playlist>();
+            String sql = " select p.id, p.name, u.id as userId, u.name as userName " +
+                         " from playlists p " +
+                            " left outer join users u " +
+                            " on u.id = p.user_id " +
+                         " order by p.id desc ";
+            
+            if ( limit != -1 ) {
+                sql += " limit " +limit+
+                       " offset " +offset;
+            }
+
+            st = db.prepare( sql );
             rs = st.executeQuery();
             
             while ( rs.next() ) {
-            	lists.add(createFromResultSet(rs));
+                final User user = rs.getString( "userId" ) != null
+                    ? new User( rs.getInt("userId"), rs.getString("userName") )
+                    : null;
+            	lists.add(new Playlist(
+                    rs.getInt( "id" ),
+                    rs.getString( "name" ),
+                    -1,
+                    user
+                ));
             }
             
-    	} catch (SQLException e) {
-    		System.out.println( e.getMessage() );
-    		e.printStackTrace();
-    	} finally {
+            return lists;
+    	
+    	}
+        
+        finally {
             Utils.close( rs );
             Utils.close( st );
     	}
     	
-    	return lists;
-    	
-    }
-    
-    /**
-     *  creates a new playlist from a result set row
-     * 
-     *  @param rs the result set
-     *  @return Playlist
-     *  @throws SQLException 
-     * 
-     */
-    public static Playlist createFromResultSet(final ResultSet rs) throws SQLException {
-    	return new Playlist(rs.getInt( "playlistId" ), rs.getString( "playlistName" ), rs.getInt( "trackCount" ) );
     }
 
     /**

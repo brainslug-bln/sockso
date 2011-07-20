@@ -9,10 +9,12 @@
 
 package com.pugh.sockso.music;
 
-import com.pugh.sockso.db.Database;
+import com.pugh.sockso.Utils;
 import com.pugh.sockso.web.User;
 import com.pugh.sockso.tests.SocksoTestCase;
 import com.pugh.sockso.tests.TestDatabase;
+
+import java.util.Vector;
 
 public class PlaylistTest extends SocksoTestCase {
 
@@ -59,6 +61,51 @@ public class PlaylistTest extends SocksoTestCase {
     
     public void testFindReturnsNullWhenTheSpecifiedPlaylistDoesNotExist() throws Exception {
         assertNull( Playlist.find(db,123) );
+    }
+    
+    public void testFindallReturnsAllPlaylists() throws Exception {
+        db.fixture( "playlists" );
+        Vector<Playlist> playlists = Playlist.findAll( db, 100, 0 );
+        assertEquals( 3, playlists.size() );
+    }
+    
+    public void testFindallCanBeOffset() throws Exception {
+        db.fixture( "playlists" );
+        Vector<Playlist> playlists = Playlist.findAll( db, 100, 1 );
+        assertEquals( 2, playlists.size() );
+        assertEquals( "A Playlist", playlists.get(0).getName() );
+        assertEquals( "Foo Foo", playlists.get(1).getName() );
+    }
+    
+    public void testFindallCanBeLimited() throws Exception {
+        db.fixture( "playlists" );
+        Vector<Playlist> playlists = Playlist.findAll( db, 2, 0 );
+        assertEquals( 2, playlists.size() );
+        assertEquals( "Bar Bar", playlists.get(0).getName() );
+        assertEquals( "A Playlist", playlists.get(1).getName() );
+    }
+    
+    public void testFindallReturnsNewestPlaylistsFirst() throws Exception {
+        db.fixture( "playlists" );
+        Vector<Playlist> playlists = Playlist.findAll( db, 100, 0 );
+        assertEquals( "Bar Bar", playlists.get(0).getName() );
+        assertEquals( "Foo Foo", playlists.get(2).getName() );
+    }
+    
+    public void testFindallWithLimitOfMinusOneMeansNoLimit() throws Exception {
+        db.fixture( "playlists" );
+        for ( int i=0; i<200; i++ ) {
+            db.update( " insert into playlists ( name, date_created, date_modified ) " +
+                       " values ( '" +Utils.getRandomString(20)+ "', now(), now() )" );
+        }
+        Vector<Playlist> playlists = Playlist.findAll( db, -1, 0 );
+        assertEquals( 203, playlists.size() );
+    }
+    
+    public void testFindallReturnsUsersWithPlaylistsTheyHaveCreated() throws Exception {
+        db.fixture( "playlists" );
+        Vector<Playlist> playlists = Playlist.findAll( db, 100, 0 );
+        assertEquals( "MyUser", playlists.get(1).getUser().getName() );
     }
     
 }

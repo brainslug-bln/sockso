@@ -13,14 +13,18 @@
 </%java>
 [
     <%for final Playlist playlist : playlists %>
+
         <%if !firstItem %>,</%if>
-{
-        id: <% playlist.getId() %>,
-        name: '<% Utils.escapeJs(playlist.getName()) %>',
-        trackCount: <% playlist.getTrackCount() %>
-}
-        <%java>
-            firstItem = false;
-        </%java>
+        <%java>firstItem = false;</%java>
+
+        {
+            "id": <% playlist.getId() %>,
+            "name": "<% Utils.escapeJs(playlist.getName()) %>",
+
+            <%if playlist.getUser() != null %>
+                , "user": { "id": <% playlist.getUser().getId() %>, "name": "<% playlist.getUser().getName() %>" }
+            </%if>
+        }
+
     </%for>
 ]
