@@ -25,9 +25,16 @@ public class PlaylistsAction extends BaseApiAction {
     
     public boolean canHandle( final Request req ) {
         
-        return req.getParamCount() == 2
-            && req.getUrlParam( 1 ).equals( "playlists" );
-        
+        return (
+            req.getParamCount() == 2
+            && req.getUrlParam( 1 ).equals( "playlists" )
+        )
+            ||
+        (
+            req.getParamCount() == 3
+            && ( req.getUrlParam(2).equals("site") || req.getUrlParam(2).equals("user") )
+        );
+
     }
     
     /**
@@ -41,13 +48,32 @@ public class PlaylistsAction extends BaseApiAction {
     
     public void handleRequest() throws SQLException, IOException, BadRequestException {
         
-        final Vector<Playlist> playlists = Playlist.findAll(
-            getDatabase(),
-            getLimit(),
-            getOffset()
-        );
-        
-        showPlaylists( playlists );
+        final Request req = getRequest();
+
+        if ( req.getUrlParam(2).equals("site") ) {
+            showPlaylists(Playlist.findAllForSite(
+                getDatabase(),
+                getLimit(),
+                getOffset()
+            ));
+        }
+
+        else if ( req.getUrlParam(2).equals("user") ) {
+            showPlaylists(Playlist.findAllForUser(
+                getDatabase(),
+                getUser(),
+                getLimit(),
+                getOffset()
+            ));
+        }
+
+        else {
+            showPlaylists(Playlist.findAll(
+                getDatabase(),
+                getLimit(),
+                getOffset()
+            ));
+        }
         
     }
     

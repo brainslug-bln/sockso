@@ -1,11 +1,3 @@
-/*
- * Playlist.java
- * 
- * Created on May 17, 2007, 9:50:09 PM
- * 
- * Represents a playlist
- * 
- */
 
 package com.pugh.sockso.music;
 
@@ -107,6 +99,26 @@ public class Playlist extends MusicItem {
      */
     
     public static Vector<Playlist> findAll( final Database db, int limit, int offset ) throws SQLException {
+        
+        return findPlaylistsForSql( db, limit, offset,  "" );
+                    
+    }
+    
+    /**
+     *  Finds and returns playlists that match some specified sql where clause
+     * 
+     *  @param db
+     *  @param limit
+     *  @param offset
+     *  @param whereSql
+     * 
+     *  @return
+     * 
+     *  @throws SQLException 
+     * 
+     */
+    
+    protected static Vector<Playlist> findPlaylistsForSql( final Database db, final int limit, final int offset, final String whereSql ) throws SQLException {
     	
         PreparedStatement st = null;
         ResultSet rs = null;
@@ -114,9 +126,11 @@ public class Playlist extends MusicItem {
     	try {
 
             final Vector<Playlist> lists = new Vector<Playlist>();
-            String sql = getSelectFromSql() +
-                         " order by p.id desc ";
             
+            String sql = getSelectFromSql() +
+                        whereSql +
+                         " order by p.id desc ";
+
             if ( limit != -1 ) {
                 sql += " limit " +limit+
                        " offset " +offset;
@@ -138,6 +152,47 @@ public class Playlist extends MusicItem {
             Utils.close( st );
     	}
     	
+    }
+    
+    /**
+     *  Finds all playlists for a user
+     * 
+     *  @param db
+     *  @param user
+     *  @param limit
+     *  @param offset
+     * 
+     *  @return
+     * 
+     *  @throws SQLException 
+     * 
+     */
+    
+    public static Vector<Playlist> findAllForUser( final Database db, final User user, final int limit, final int offset ) throws SQLException {
+        
+        return user != null
+            ? findPlaylistsForSql( db, limit, offset, " where p.user_id = '" +user.getId()+ "' " )
+            : new Vector<Playlist>();
+        
+    }
+    
+    /**
+     *  Finds all site playlists
+     * 
+     *  @param db
+     *  @param limit
+     *  @param offset
+     * 
+     *  @return
+     * 
+     *  @throws Exception 
+     * 
+     */
+    
+    public static Vector<Playlist> findAllForSite( final Database db, final int limit, final int offset ) throws SQLException {
+        
+        return findPlaylistsForSql( db, limit, offset, " where p.user_id = -1 " );
+        
     }
     
     /**

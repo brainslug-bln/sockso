@@ -4,6 +4,7 @@ package com.pugh.sockso.web.action.api;
 import com.pugh.sockso.tests.SocksoTestCase;
 import com.pugh.sockso.tests.TestDatabase;
 import com.pugh.sockso.tests.TestResponse;
+import com.pugh.sockso.web.User;
 
 public class PlaylistsActionTest extends SocksoTestCase {
     
@@ -25,6 +26,8 @@ public class PlaylistsActionTest extends SocksoTestCase {
     public void testActionHandlesPlaylistsUrl() {
         assertTrue( action.canHandle(getRequest("/api/playlists")) );
         assertTrue( action.canHandle(getRequest("/api/playlists?offset=100")) );
+        assertTrue( action.canHandle(getRequest("/api/playlists/site")) );
+        assertTrue( action.canHandle(getRequest("/api/playlists/user")) );
     }
     
     public void testActionDoesntHandleNonPlaylistUrls() {
@@ -42,6 +45,32 @@ public class PlaylistsActionTest extends SocksoTestCase {
     public void testPlaylistsForUsersIncludeTheUsersInformation() throws Exception {
         action.handleRequest();
         assertContains( res.getOutput(), "MyUser" );
+    }
+    
+    public void testOnlySitePlaylistsListedWhenRequestedBySiteUrl() throws Exception {
+        action.setRequest( getRequest("/api/playlists/site") );
+        action.handleRequest();
+        assertContains( res.getOutput(), "Foo Foo" );
+        assertContains( res.getOutput(), "Bar Bar" );
+        assertNotContains( res.getOutput(), "A Playlist" );
+    }
+    
+    public void testOnlyCurrentUsersPlaylistsListedWhenRequestedByUserUrl() throws Exception {
+        action.setRequest( getRequest("/api/playlists/user") );
+        action.setUser( new User(1,"foo") );
+        action.handleRequest();
+        assertContains( res.getOutput(), "A Playlist" );
+        assertNotContains( res.getOutput(), "Foo Foo" );
+        assertNotContains( res.getOutput(), "Bar Bar" );
+    }
+    
+    public void testNoPlaylistsListedWhenUserUrlRequestedAndNoCurrentUser() throws Exception {
+        action.setRequest( getRequest("/api/playlists/user") );
+        action.setUser( null );
+        action.handleRequest();
+        assertNotContains( res.getOutput(), "A Playlist" );
+        assertNotContains( res.getOutput(), "Foo Foo" );
+        assertNotContains( res.getOutput(), "Bar Bar" );
     }
     
 }

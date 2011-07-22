@@ -20,10 +20,17 @@ public class PlaylistTest extends SocksoTestCase {
 
     private TestDatabase db;
     
+    private User user;
+    
     @Override
     public void setUp() throws Exception {
+        user = new User( 1, "Foo" );
         db = new TestDatabase();
         db.fixture( "playlists" );
+    }
+    
+    private void userPlaylists() throws Exception {
+        db.update(" insert into playlists ( name, date_created, date_modified, user_id ) values ( '" +Utils.getRandomString(20)+ "',now(),now(),1 ) " );
     }
     
     public void testConstructor() {
@@ -117,6 +124,56 @@ public class PlaylistTest extends SocksoTestCase {
     public void testGettracksReturnsEmptyWhenThePlaylistDoesntExistInTheDatabase() throws Exception {
         Vector<Track> tracks = new Playlist(99999,"Foo").getTracks( db );
         assertEquals( 0, tracks.size() );
+    }
+    
+    public void testFindallforuserReturnsPlaylistsForSpecifiedUser() throws Exception {
+        userPlaylists();
+        Vector<Playlist> tracks = Playlist.findAllForUser( db, user, 100, 0 );
+        assertEquals( 2, tracks.size() );
+    }
+    
+    public void testFindallforuserReturnsPlaylistsEmptyWhenNullSpecifiedForUser() throws Exception {
+        userPlaylists();
+        Vector<Playlist> tracks = Playlist.findAllForUser( db, null, 100, 0 );
+        assertEquals( 0, tracks.size() );
+    }
+    
+    public void testFindallforuserCanBeLimited() throws Exception {
+        userPlaylists();
+        Vector<Playlist> tracks = Playlist.findAllForUser( db, user, 1, 0 );
+        assertEquals( 1, tracks.size() );
+    }
+    
+    public void testFindallforuserCanBeOffset() throws Exception {
+        userPlaylists();
+        Vector<Playlist> tracks = Playlist.findAllForUser( db, user, 100, 1 );
+        assertEquals( 1, tracks.size() );
+    }
+    
+    public void testFindallforuserWithLimitOfMinusOneMeansNoLimit() throws Exception {
+        userPlaylists();
+        Vector<Playlist> tracks = Playlist.findAllForUser( db, user, -1, 0 );
+        assertEquals( 2, tracks.size() );
+    }
+    
+    public void testFindallforsiteReturnsOnlySitePlaylists() throws Exception {
+        Vector<Playlist> tracks = Playlist.findAllForSite( db, 100, 0 );
+        assertEquals( 2, tracks.size() );
+    }
+    
+    public void testFindallforsiteCanBeLimited() throws Exception {
+        Vector<Playlist> tracks = Playlist.findAllForSite( db, 1, 0 );
+        assertEquals( 1, tracks.size() );
+    }
+    
+    public void testFindallforsiteCanBeOffset() throws Exception {
+        Vector<Playlist> tracks = Playlist.findAllForSite( db, 100, 1 );
+        assertEquals( 1, tracks.size() );
+    }
+    
+    public void testFindallforsiteWithLimitMinusOneMeansNoLimit() throws Exception {
+        Vector<Playlist> tracks = Playlist.findAllForSite( db, -1, 0 );
+        assertEquals( 2, tracks.size() );
     }
     
 }
