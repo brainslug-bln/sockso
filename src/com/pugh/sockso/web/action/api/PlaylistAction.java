@@ -1,7 +1,9 @@
 
 package com.pugh.sockso.web.action.api;
 
+import com.pugh.sockso.db.Database;
 import com.pugh.sockso.music.Playlist;
+import com.pugh.sockso.music.Track;
 import com.pugh.sockso.templates.api.TPlaylist;
 import com.pugh.sockso.web.BadRequestException;
 import com.pugh.sockso.web.Request;
@@ -9,6 +11,8 @@ import com.pugh.sockso.web.Request;
 import java.io.IOException;
 
 import java.sql.SQLException;
+
+import java.util.Vector;
 
 public class PlaylistAction extends BaseApiAction {
 
@@ -23,16 +27,14 @@ public class PlaylistAction extends BaseApiAction {
     
     public void handleRequest() throws IOException, SQLException, BadRequestException {
         
-        final Playlist playlist = Playlist.find(
-            getDatabase(),
-            Integer.parseInt( getRequest().getUrlParam(2) )
-        );
+        final Database db = getDatabase();
+        final Playlist playlist = Playlist.find( db, Integer.parseInt( getRequest().getUrlParam(2) ) );
         
         if ( playlist == null ) {
             throw new BadRequestException( "Invalid playlist ID" );
         }
         
-        showPlaylist( playlist );
+        showPlaylist( playlist, playlist.getTracks(db) );
         
     }
     
@@ -40,15 +42,17 @@ public class PlaylistAction extends BaseApiAction {
      *  Shows a playlist as JSON
      * 
      *  @param playlist
+     *  @param tracks 
      * 
      *  @throws IOException 
      * 
      */
     
-    protected void showPlaylist( final Playlist playlist ) throws IOException {
+    protected void showPlaylist( final Playlist playlist, final Vector<Track> tracks ) throws IOException {
         
         TPlaylist tpl = new TPlaylist();
         tpl.setPlaylist( playlist );
+        tpl.setTracks( tracks );
         
         getResponse().showJson( tpl.makeRenderer() );
         

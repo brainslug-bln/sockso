@@ -56,8 +56,12 @@ public class PlaylistActionTest extends SocksoTestCase {
         }
     }
     
-    public void testMusicItemsForPlaylistReturnedWithIt() throws Exception {
-        
+    public void testTracksForPlaylistReturnedWithIt() throws Exception {
+        action.setRequest( getRequest("/api/plsylists/2") );
+        action.handleRequest();
+        assertContains( res.getOutput(), "My Track" );
+        assertContains( res.getOutput(), "Second Track" );
+        assertContains( res.getOutput(), "Third Track" );
     }
     
 }

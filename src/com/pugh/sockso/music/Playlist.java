@@ -48,6 +48,24 @@ public class Playlist extends MusicItem {
     }
     
     /**
+     *  Returns the tracks for the playlist
+     * 
+     *  @param db
+     * 
+     *  @return 
+     * 
+     *  @throws SQLException
+     *  @throws BadRequestException
+     * 
+     */
+    
+    public Vector<Track> getTracks( final Database db ) throws SQLException, BadRequestException {
+        
+        return Track.getTracks( db, "pl", getId() );
+        
+    }
+    
+    /**
      *  returns the sql to select the tracks from a playlist
      * 
      *  @param playlistId the id of the playlist
