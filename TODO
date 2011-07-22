@@ -54,21 +54,21 @@ that are marked as "paged" return 100 items at a time maximum, but this can
 be adjusted using "limit" and "offset" parameters.  Requests should be GET.
 A "limit" of -1 means no limit.  Offset can only be specified with a limit.
 
-/api - (server info, same as /json/serverinfo) [DONE]
-/api/artists - array of all artists ordered a-z (paged) [DONE]
-/api/artists/123 - artist info (with albums) [DONE]
-/api/artists/123/tracks - array of tracks for artist [DONE]
+/api - (server info, same as /json/serverinfo)                              [DONE]
+/api/artists - array of all artists ordered a-z (paged)                     [DONE]
+/api/artists/123 - artist info (with albums)                                [DONE]
+/api/artists/123/tracks - array of tracks for artist                        [DONE]
 
-/api/albums - array of all albums ordered a-z (paged) [DONE]
-/api/albums/123 - album info (with artist) [DONE]
-/api/albums/123/tracks - array of tracks for album [DONE]
+/api/albums - array of all albums ordered a-z (paged)                       [DONE]
+/api/albums/123 - album info (with artist)                                  [DONE]
+/api/albums/123/tracks - array of tracks for album                          [DONE]
 
-/api/tracks - array of all tracks ordered a-z (paged)
-/api/tracks/123 - track info, artist and album [DONE]
+/api/tracks - array of all tracks ordered a-z (paged)                       [    ]
+/api/tracks/123 - track info, artist and album                              [DONE]
 
-/api/playlists - array of all playlists, newest first (paged) [DONE]
-/api/playlists/123 - array of music items for playlist (track, album or artist)
-/api/playlists/user - array of the current users playlists (paged)
-/api/playlists/site - array of site playlists
+/api/playlists - array of all playlists, newest first (paged)               [DONE]
+/api/playlists/123 - array of tracks for playlist                           [DONE]
+/api/playlists/user - array of the current users playlists (paged)          [    ]
+/api/playlists/site - array of site playlists                               [    ]
 
-/api/session - returns '1' or '0' depending on if the session is valid [DONE]
+/api/session - returns '1' or '0' depending on if the session is valid      [DONE]
