@@ -77,5 +77,5 @@ API TODO
 --------
 
 1) Add artist to /api/albums                                                [DONE]
-2) API errors need to render as JSON                                        [    ]
+2) API errors need to render as JSON                                        [DONE]
 3) Tracks need artist/album info in /api/playlists/123                      [    ]

@@ -3,6 +3,7 @@ package com.pugh.sockso.web.action;
 
 import com.pugh.sockso.Constants;
 import com.pugh.sockso.Properties;
+import com.pugh.sockso.templates.api.TException;
 import com.pugh.sockso.web.BadRequestException;
 import com.pugh.sockso.web.Request;
 import com.pugh.sockso.web.action.api.AlbumAction;
@@ -36,16 +37,26 @@ public class Api extends BaseAction {
     /**
      *  Run through API actions looking for one to handle the request
      *
-     *  @throws BadRequestException
      *  @throws IOException
-     *  @throws SQLException
-     *
+     * 
      */
 
     @Override
-    public void handleRequest() throws BadRequestException {
+    public void handleRequest() throws IOException {
 
-        processActions( getApiActions() );
+        try {
+            processActions( getApiActions() );
+        }
+        
+        catch ( final BadRequestException e ) {
+            
+            TException tpl = new TException();
+            tpl.setMessage( e.getMessage() );
+            
+            getResponse().setStatus( e.getStatusCode() );
+            getResponse().showJson( tpl.makeRenderer() );
+            
+        }
         
     }
     
