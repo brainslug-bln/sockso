@@ -140,4 +140,10 @@ public class AlbumTest extends SocksoTestCase {
         assertEquals( "Zan Album", albums.get(2).getName() );
     }
     
+    public void testFindallReturnsArtistsWithAlbums() throws Exception {
+        db.fixture( "albums" );
+        Vector<Album> albums = Album.findAll( db, -1, 0 );
+        assertEquals( "A Artist", albums.get(0).getArtist().getName() );
+    }
+    
 }

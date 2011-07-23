@@ -21,7 +21,11 @@
 
     {
         "id": "<% album.getId() %>",
-        "name": "<% album.getName() %>"
+        "name": "<% album.getName() %>",
+        "artist": {
+            "id": <% album.getArtist().getId() %>,
+            "name": "<% album.getArtist().getName() %>
+        }
     }
 
 </%for>

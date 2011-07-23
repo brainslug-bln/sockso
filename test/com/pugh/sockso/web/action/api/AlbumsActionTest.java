@@ -68,4 +68,10 @@ public class AlbumsActionTest extends SocksoTestCase {
         assertContains( res.getOutput(), "Zan Album" );
     }
     
+    public void testArtistsListedWithAlbums() throws Exception {
+        action.setRequest(getRequest( "/api/albums" ));
+        action.handleRequest();
+        assertContains( res.getOutput(), "A Artist" );
+    }
+    
 }

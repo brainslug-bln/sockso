@@ -3,6 +3,7 @@ package com.pugh.sockso.music;
 
 import com.pugh.sockso.Utils;
 import com.pugh.sockso.db.Database;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -75,31 +76,19 @@ public class Album extends MusicItem {
     
     public static Vector<Album> findByArtistId( final Database db, final int artistId ) throws SQLException {
         
-        final Vector<Album> albums = new Vector<Album>();
-        
         PreparedStatement st = null;
         ResultSet rs = null;
         
         try {
             
-            final String sql = " select al.id, al.name, al.year " +
-                               " from albums al " +
+            final String sql = getSelectAllFromSql() +
                                " where al.artist_id = ? ";
             
             st = db.prepare( sql );
             st.setInt( 1, artistId );
             rs = st.executeQuery();
             
-            while ( rs.next() ) {
-                albums.add(new Album(
-                    null,
-                    rs.getInt( "id" ),
-                    rs.getString( "name" ),
-                    rs.getString( "year" )
-                ));
-            }
-            
-            return albums;
+            return createVectorFromResultSet( rs );
             
         }
         
@@ -110,6 +99,71 @@ public class Album extends MusicItem {
         
     }
     
+    /**
+     *  Returns the SELECT X FROM Y to select albums
+     * 
+     *  @return 
+     * 
+     */
+    
+    protected static String getSelectAllFromSql() {
+        
+        return " select al.id, al.name, al.year, " +
+                   " ar.id as artist_id, ar.name as artist_name " +
+               " from albums al " +
+                   " inner join artists ar " +
+                   " on ar.id = al.artist_id ";
+        
+    }
+    
+    /**
+     *  Creates an album from the current position of the result set
+     * 
+     *  @param rs
+     * 
+     *  @return
+     * 
+     *  @throws SQLException 
+     * 
+     */
+    
+    protected static Album createFromResultSet( final ResultSet rs ) throws SQLException {
+        
+        return new Album(
+            new Artist(
+                rs.getInt( "artist_id" ),
+                rs.getString( "artist_name" )
+            ),
+            rs.getInt( "id" ),
+            rs.getString( "name" ),
+            rs.getString( "year" )
+        );
+        
+    }
+    
+    /**
+     *  Creates a vector of albums from the result set
+     * 
+     *  @param rs
+     * 
+     *  @return
+     * 
+     *  @throws SQLException 
+     * 
+     */
+    
+    protected static Vector<Album> createVectorFromResultSet( final ResultSet rs ) throws SQLException {
+        
+        final Vector<Album> albums = new Vector<Album>();
+        
+        while ( rs.next() ) {
+            albums.add( createFromResultSet(rs) );
+        }
+
+        return albums;
+
+    }
+        
     /**
      *  Finds an album by id, returns null if not found
      * 
@@ -129,11 +183,7 @@ public class Album extends MusicItem {
         
         try {
             
-            final String sql = " select al.id, al.name, al.year, " +
-                                   " ar.id as artist_id, ar.name as artist_name " +
-                               " from albums al " +
-                                   " inner join artists ar " +
-                                   " on ar.id = al.artist_id " +
+            final String sql = getSelectAllFromSql() +
                                " where al.id = ? ";
             
             st = db.prepare( sql );
@@ -141,15 +191,7 @@ public class Album extends MusicItem {
             rs = st.executeQuery();
             
             if ( rs.next() ) {
-                return new Album(
-                    new Artist(
-                        rs.getInt( "artist_id" ),
-                        rs.getString( "artist_name" )
-                    ),
-                    rs.getInt( "id" ),
-                    rs.getString( "name" ),
-                    rs.getString( "year" )
-                );
+                return createFromResultSet( rs );
             }
             
         }
@@ -183,10 +225,7 @@ public class Album extends MusicItem {
         
         try {
             
-            final Vector<Album> albums = new Vector<Album>();
-            
-            String sql = " select al.id, al.name, al.year " +
-                         " from albums al " +
+            String sql = getSelectAllFromSql() +
                          " order by al.name asc ";
             
             if ( limit != -1 ) {
@@ -197,16 +236,7 @@ public class Album extends MusicItem {
             st = db.prepare( sql );
             rs = st.executeQuery();
             
-            while ( rs.next() ) {
-                albums.add(new Album(
-                    null,
-                    rs.getInt( "id" ),
-                    rs.getString( "name" ),
-                    rs.getString( "year" )
-                ));
-            }
-            
-            return albums;
+            return createVectorFromResultSet( rs );
             
         }
         
