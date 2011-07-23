@@ -15,12 +15,30 @@
 [
 
 <%for final Track track : tracks %>
+
     <%if !isFirst%>,</%if>
     <%java>isFirst = false;</%java>
+
     {
         "id": "<% track.getId() %>",
         "name": "<% track.getName() %>"
+
+        <%if track.getArtist() != null %>
+            , "artist": {
+                "id": <% track.getArtist().getId() %>,
+                "name": "<% track.getArtist().getName() %>"
+            }
+        </%if>
+
+        <%if track.getAlbum() != null %>
+            , "album": {
+                "id": <% track.getAlbum().getId() %>,
+                "name": "<% track.getAlbum().getName() %>"
+            }
+        </%if>
+
     }
+
 </%for>
 
 ]

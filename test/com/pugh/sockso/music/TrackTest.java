@@ -267,5 +267,33 @@ public class TrackTest extends SocksoTestCase {
         Track track = Track.find( db, 1 );
         assertEquals( "My Artist", track.getArtist().getName() );
     }
+    
+    public void testFindallReturnsAllTracksRequested() throws Exception {
+        TestDatabase db = new TestDatabase();
+        db.fixture( "artistsAlbumsAndTracks" );
+        Vector<Track> tracks = Track.findAll( db, 100, 0 );
+        assertEquals( 3, tracks.size() );
+    }
+    
+    public void testFindallCanBeLimited() throws Exception {
+        TestDatabase db = new TestDatabase();
+        db.fixture( "artistsAlbumsAndTracks" );
+        Vector<Track> tracks = Track.findAll( db, 2, 0 );
+        assertEquals( 2, tracks.size() );
+    }
+    
+    public void testFindallCanBeOffset() throws Exception {
+        TestDatabase db = new TestDatabase();
+        db.fixture( "artistsAlbumsAndTracks" );
+        Vector<Track> tracks = Track.findAll( db, 100, 1 );
+        assertEquals( 2, tracks.size() );
+    }
+    
+    public void testFindallWithLimitOfMinusOneMeansNoLimit() throws Exception {
+        TestDatabase db = new TestDatabase();
+        db.fixture( "artistsAlbumsAndTracks" );
+        Vector<Track> tracks = Track.findAll( db, -1, 0 );
+        assertEquals( 3, tracks.size() );
+    }
 
 }

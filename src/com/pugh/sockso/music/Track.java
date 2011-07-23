@@ -1,11 +1,3 @@
-/*
- * Track.java
- * 
- * Created on May 17, 2007, 10:54:00 AM
- * 
- * Represents a track in the collection
- * 
- */
 
 package com.pugh.sockso.music;
 
@@ -381,4 +373,45 @@ public class Track extends MusicItem {
         
     }
 
+    /**
+     *  Find all tracks, with optional limit and offset
+     * 
+     *  @param db
+     *  @param limit
+     *  @param offset
+     * 
+     *  @return
+     * 
+     *  @throws SQLException 
+     * 
+     */
+    
+    public static Vector<Track> findAll( final Database db, final int limit, final int offset ) throws SQLException {
+        
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        
+        try {
+            
+            String sql = getSelectFromSql();
+            
+            if ( limit != -1 ) {
+                sql += " limit " +limit+
+                       " offset " +offset;
+            }
+            
+            st = db.prepare( sql );
+            rs = st.executeQuery();
+            
+            return createVectorFromResultSet( rs );
+            
+        }
+        
+        finally {
+            Utils.close( rs );
+            Utils.close( st );
+        }
+        
+    }
+    
 }

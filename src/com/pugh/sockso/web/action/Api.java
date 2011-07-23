@@ -16,6 +16,7 @@ import com.pugh.sockso.web.action.api.PlaylistsAction;
 import com.pugh.sockso.web.action.api.RootAction;
 import com.pugh.sockso.web.action.api.SessionAction;
 import com.pugh.sockso.web.action.api.TrackAction;
+import com.pugh.sockso.web.action.api.TracksAction;
 
 import org.apache.log4j.Logger;
 
@@ -144,6 +145,7 @@ public class Api extends BaseAction {
             // tracks
             
             new TrackAction(),
+            new TracksAction(),
             
             // artists
             
